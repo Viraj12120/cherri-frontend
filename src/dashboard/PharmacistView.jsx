@@ -116,47 +116,49 @@ const PharmacistView = () => {
               <span className="text-[11px]">5 items</span>
             </div>
           </div>
-          <table className="w-full text-left text-xs">
-            <thead className="text-white/30 uppercase tracking-wider border-b border-white/5">
-              <tr>
-                <th className="px-6 py-4 font-medium">Drug Name</th>
-                <th className="px-6 py-4 font-medium">Category</th>
-                <th className="px-6 py-4 font-medium">Stock</th>
-                <th className="px-6 py-4 font-medium">Min</th>
-                <th className="px-6 py-4 font-medium">Status</th>
-                <th className="px-6 py-4 font-medium text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {STOCK_TABLE.map((row, i) => (
-                <tr
-                  key={i}
-                  onClick={() => setSelectedStock(row)}
-                  className="hover:bg-white/[0.04] transition-colors group cursor-pointer"
-                >
-                  <td className="px-6 py-4 font-bold text-white/90">{row.name}</td>
-                  <td className="px-6 py-4 text-white/40">{row.cat}</td>
-                  <td className={`px-6 py-4 font-bold ${row.status === 'CRIT' ? 'text-danger' : row.status === 'LOW' ? 'text-warn' : 'text-white/80'}`}>{row.stock}</td>
-                  <td className="px-6 py-4 text-white/40">{row.min}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${row.color}`}>{row.status}</span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    {row.status !== 'OK' ? (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setReorderItem(row); }}
-                        className="bg-acid/10 hover:bg-acid text-acid hover:!text-black px-3 py-1 rounded font-bold transition-all"
-                      >
-                        Reorder
-                      </button>
-                    ) : (
-                      <span className="text-white/20 text-[10px]">—</span>
-                    )}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs min-w-[600px] md:min-w-0">
+              <thead className="text-white/30 uppercase tracking-wider border-b border-white/5">
+                <tr>
+                  <th className="px-6 py-4 font-medium">Drug Name</th>
+                  <th className="px-6 py-4 font-medium">Category</th>
+                  <th className="px-6 py-4 font-medium">Stock</th>
+                  <th className="px-6 py-4 font-medium">Min</th>
+                  <th className="px-6 py-4 font-medium">Status</th>
+                  <th className="px-6 py-4 font-medium text-right">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {STOCK_TABLE.map((row, i) => (
+                  <tr
+                    key={i}
+                    onClick={() => setSelectedStock(row)}
+                    className="hover:bg-white/[0.04] transition-colors group cursor-pointer"
+                  >
+                    <td className="px-6 py-4 font-bold text-white/90">{row.name}</td>
+                    <td className="px-6 py-4 text-white/40">{row.cat}</td>
+                    <td className={`px-6 py-4 font-bold ${row.status === 'CRIT' ? 'text-danger' : row.status === 'LOW' ? 'text-warn' : 'text-white/80'}`}>{row.stock}</td>
+                    <td className="px-6 py-4 text-white/40">{row.min}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${row.color}`}>{row.status}</span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      {row.status !== 'OK' ? (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setReorderItem(row); }}
+                          className="bg-acid/10 hover:bg-acid text-acid hover:!text-black px-3 py-1 rounded font-bold transition-all"
+                        >
+                          Reorder
+                        </button>
+                      ) : (
+                        <span className="text-white/20 text-[10px]">—</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Sidebar Cards */}

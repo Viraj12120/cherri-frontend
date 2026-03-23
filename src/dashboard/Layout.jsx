@@ -14,6 +14,7 @@ import OrdersView from './OrdersView';
 import AlertsView from './AlertsView';
 import SettingsView from './SettingsView';
 import NLQueryTerminal from './NLQueryTerminal';
+import MobileRestriction from './components/MobileRestriction';
 
 const VIEWS = {
   overview: PharmacistView,
@@ -43,14 +44,19 @@ const DashboardLayout = ({ children, role = 'Pharmacist', onBack }) => {
   const ActiveView = VIEWS[activePage] || PharmacistView;
 
   return (
-    <div className="flex h-screen bg-void text-white overflow-hidden">
+    <div className="flex h-screen bg-void text-white overflow-hidden relative">
+      {/* Mobile Restriction Screen */}
+      <MobileRestriction />
+
       {/* Sidebar */}
       <aside
-        className={`${isCollapsed ? 'w-20' : 'w-64'} bg-navy border-r border-white/5 flex flex-col transition-all duration-300 z-30`}
+        className={`${isCollapsed ? 'md:w-20' : 'lg:w-64 md:w-20 w-0'} bg-navy border-r border-white/5 flex flex-col transition-all duration-300 z-30 md:flex hidden`}
       >
         <div className="h-14 flex items-center px-6 border-b border-white/5 gap-3">
           <div className="w-2 h-2 rounded-full bg-acid shadow-[0_0_10px_rgba(232,245,50,0.5)] flex-shrink-0"></div>
-          {!isCollapsed && <span className="font-bold tracking-tight">CherriPlus</span>}
+          {(!isCollapsed) && (
+            <span className="font-bold tracking-tight lg:inline hidden">CherriPlus</span>
+          )}
         </div>
 
         <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
@@ -70,7 +76,7 @@ const DashboardLayout = ({ children, role = 'Pharmacist', onBack }) => {
               >
                 <item.icon size={20} className={isActive ? 'text-acid' : ''} />
                 {!isCollapsed && (
-                  <span className="text-sm font-medium">
+                  <span className="text-sm font-medium lg:inline hidden">
                     {item.label}
                     {item.disabled && (
                       <sup className="text-[8px] font-bold text-acid/90 uppercase tracking-widest animate-pulse ml-1">
@@ -80,7 +86,7 @@ const DashboardLayout = ({ children, role = 'Pharmacist', onBack }) => {
                   </span>
                 )}
                 {item.badge && !isCollapsed && (
-                  <span className={`ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded ${item.badgeColor || 'bg-acid/20 text-acid'}`}>
+                  <span className={`ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded lg:inline hidden ${item.badgeColor || 'bg-acid/20 text-acid'}`}>
                     {item.badge}
                   </span>
                 )}
@@ -100,7 +106,7 @@ const DashboardLayout = ({ children, role = 'Pharmacist', onBack }) => {
               <User size={16} className="text-void" />
             </div>
             {!isCollapsed && (
-              <div className="flex-1 truncate">
+              <div className="flex-1 truncate lg:block hidden">
                 <p className="text-xs font-bold text-white leading-none mb-1">Priya K.</p>
                 <p className="text-[10px] text-white/40 leading-none">{role}</p>
               </div>
@@ -108,7 +114,7 @@ const DashboardLayout = ({ children, role = 'Pharmacist', onBack }) => {
           </div>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="w-full h-8 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-md text-white/40 hover:text-white transition-all"
+            className="w-full h-8 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-md text-white/40 hover:text-white transition-all lg:flex hidden"
           >
             {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </button>
@@ -118,25 +124,25 @@ const DashboardLayout = ({ children, role = 'Pharmacist', onBack }) => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Topbar */}
-        <header className="h-14 border-b border-white/5 flex items-center justify-between px-8 bg-void/50 backdrop-blur-md sticky top-0 z-20">
+        <header className="h-14 border-b border-white/5 flex items-center justify-between px-4 md:px-8 bg-void/50 backdrop-blur-md sticky top-0 z-20">
           <div className="flex items-center gap-4 flex-1">
             <div className="max-w-md w-full relative">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
               <input
                 type="text"
-                placeholder="Global Search SKUs, Orders, Agents..."
+                placeholder="Search..."
                 className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-xs focus:outline-none focus:border-acid/30 transition-all"
               />
             </div>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 md:gap-6">
             {onBack && (
               <>
                 <button onClick={onBack} className="text-xs font-bold text-white/40 hover:text-white transition-colors flex items-center gap-1">
-                  <ChevronLeft size={14} /> Landing
+                  <ChevronLeft size={14} /> <span className="hidden sm:inline">Landing</span>
                 </button>
-                <div className="h-6 w-px bg-white/10"></div>
+                <div className="h-6 w-px bg-white/10 hidden sm:block"></div>
               </>
             )}
             <button
@@ -149,13 +155,13 @@ const DashboardLayout = ({ children, role = 'Pharmacist', onBack }) => {
             <div className="h-6 w-px bg-white/10"></div>
             <button className="text-sm font-bold text-acid flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-acid animate-pulse"></div>
-              Agent Live
+              <span className="hidden md:inline">Agent Live</span>
             </button>
           </div>
         </header>
 
         {/* Content View */}
-        <main className="flex-1 overflow-y-auto p-8 bg-[radial-gradient(circle_at_top_right,rgba(232,245,50,0.015)_0%,transparent_50%)] relative">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-[radial-gradient(circle_at_top_right,rgba(232,245,50,0.015)_0%,transparent_50%)] relative">
           {/* Render children (role switcher) if passed, otherwise show active page */}
           {children ? children : <ActiveView />}
 
