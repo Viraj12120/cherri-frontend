@@ -60,7 +60,7 @@ const Navbar = ({ setView, currentView = 'landing' }) => {
           { key: 'navbar.features', id: 'Features' },
           { key: 'navbar.about', id: 'About' },
           { key: 'navbar.pricing', id: 'Pricing' },
-          { key: 'navbar.blog', id: 'Blog' }
+          // { key: 'navbar.blog', id: 'Blog' }
         ].map(({ key, id: link }) => {
           const isPricingLink = link === 'Pricing';
           const isHomeLink = link === 'Home';
@@ -86,8 +86,8 @@ const Navbar = ({ setView, currentView = 'landing' }) => {
                   }
                 }}
                 className={`text-sm transition-colors duration-200 ${isPricingLink && currentView === 'pricing'
-                    ? 'text-acid font-bold'
-                    : 'text-white/65 hover:text-white'
+                  ? 'text-acid font-bold'
+                  : 'text-white/65 hover:text-white'
                   }`}
               >
                 {t(key)}
@@ -100,7 +100,7 @@ const Navbar = ({ setView, currentView = 'landing' }) => {
       </ul>
 
       <div className="flex items-center gap-3 nav-cta relative">
-        <button 
+        <button
           onClick={toggleTheme}
           className="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-colors"
           aria-label="Toggle theme"
@@ -109,30 +109,30 @@ const Navbar = ({ setView, currentView = 'landing' }) => {
         </button>
 
         <div className="relative">
-          <button 
+          <button
             onClick={() => setLangDropdownOpen(!langDropdownOpen)}
             className="h-8 flex items-center justify-center gap-1.5 px-3 rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-colors text-[11px] font-bold tracking-wider"
           >
             {i18n.language ? i18n.language.toUpperCase() : 'EN'} <Globe size={14} />
           </button>
-          
+
           {langDropdownOpen && (
             <div className="absolute top-10 right-0 w-32 bg-void/90 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl flex flex-col z-50">
-               <button onClick={() => { i18n.changeLanguage('en-US'); setLangDropdownOpen(false); }} className="text-xs text-left px-4 py-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors">English (US)</button>
-               <button onClick={() => { i18n.changeLanguage('en-IN'); setLangDropdownOpen(false); }} className="text-xs text-left px-4 py-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors">English (IN)</button>
-               <button onClick={() => { i18n.changeLanguage('es'); setLangDropdownOpen(false); }} className="text-xs text-left px-4 py-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors">Español</button>
-               <button onClick={() => { i18n.changeLanguage('fr'); setLangDropdownOpen(false); }} className="text-xs text-left px-4 py-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors">Français</button>
-               <button onClick={() => { i18n.changeLanguage('hi'); setLangDropdownOpen(false); }} className="text-xs text-left px-4 py-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors">हिंदी</button>
+              <button onClick={() => { i18n.changeLanguage('en-US'); setLangDropdownOpen(false); }} className="text-xs text-left px-4 py-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors">English (US)</button>
+              <button onClick={() => { i18n.changeLanguage('en-IN'); setLangDropdownOpen(false); }} className="text-xs text-left px-4 py-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors">English (IN)</button>
+              <button onClick={() => { i18n.changeLanguage('es'); setLangDropdownOpen(false); }} className="text-xs text-left px-4 py-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors">Español</button>
+              <button onClick={() => { i18n.changeLanguage('fr'); setLangDropdownOpen(false); }} className="text-xs text-left px-4 py-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors">Français</button>
+              <button onClick={() => { i18n.changeLanguage('hi'); setLangDropdownOpen(false); }} className="text-xs text-left px-4 py-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors">हिंदी</button>
             </div>
           )}
         </div>
 
-        <button 
+        <button
           onClick={() => setView && setView('login')}
           className="text-xs md:text-sm border border-white/20 rounded-full px-4 py-1.5 text-white/80 hover:text-white hover:bg-white/5 transition-colors font-medium hidden sm:block">
           {t('navbar.login')}
         </button>
-        <button 
+        <button
           onClick={() => setView && setView('signup')}
           className="text-xs md:text-sm border border-white/20 rounded-full px-4 py-1.5 text-void bg-white hover:brightness-90 transition-all font-bold">
           {t('navbar.signup')}
