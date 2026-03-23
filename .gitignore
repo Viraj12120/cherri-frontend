@@ -1,0 +1,5 @@
+node_modules
+*.patch
+patch_deep*.js
+patch_hero.js
+patch_translation*.js
