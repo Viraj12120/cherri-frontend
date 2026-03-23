@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Sun, Moon, Globe } from 'lucide-react';
+import { Sun, Moon, Globe, Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-const Navbar = ({ setView, currentView = 'landing' }) => {
+const Navbar = ({ setView, currentView = 'landing', isMenuOpen, setIsMenuOpen }) => {
   const { t, i18n } = useTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [theme, setTheme] = useState('dark');
@@ -134,7 +134,76 @@ const Navbar = ({ setView, currentView = 'landing' }) => {
         </button>
         <button
           onClick={() => setView && setView('signup')}
-          className="text-xs md:text-sm border border-white/20 rounded-full px-4 py-1.5 text-void bg-white hover:brightness-90 transition-all font-bold">
+          className="text-xs md:text-sm border border-white/20 rounded-full px-4 py-1.5 text-void bg-white hover:brightness-90 transition-all font-bold hidden md:block">
+          {t('navbar.signup')}
+        </button>
+
+        {/* Hamburger Button */}
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className={`md:hidden flex items-center justify-center w-10 h-10 rounded-xl transition-all active:scale-95 ${isScrolled
+            ? 'bg-white/10 text-acid border border-white/10'
+            : 'bg-white/5 border border-white/10 text-acid'
+            }`}
+          aria-label="Toggle menu"
+        >
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      <div className={`fixed inset-0 bg-void z-40 h-screen md:hidden flex flex-col items-center justify-center gap-10 transition-all duration-500 ease-in-out ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+        {/* Close Button in full screen menu */}
+        <button
+          onClick={() => setIsMenuOpen(false)}
+          className="absolute top-4 right-6 w-10 h-10 flex items-center justify-center text-white/40 hover:text-white transition-colors"
+        >
+          <X size={32} />
+        </button>
+        <div className="flex flex-col items-center gap-6 mt-20 w-full mb-auto overflow-y-auto">
+          {[
+            { key: 'navbar.home', id: 'Home' },
+            { key: 'navbar.features', id: 'Features' },
+            { key: 'navbar.about', id: 'About' },
+            { key: 'navbar.pricing', id: 'Pricing' },
+            { key: 'navbar.login', id: 'Login' },
+          ].map(({ key, id: link }) => {
+          const isPricingLink = link === 'Pricing';
+          const isLoginLink = link === 'Login';
+          const isHomeLink = link === 'Home';
+
+          return (
+            <a
+              key={link}
+              href={isPricingLink || isLoginLink ? '#' : `#${link.toLowerCase()}`}
+              onClick={(e) => {
+                setIsMenuOpen(false);
+                if (isPricingLink) {
+                  e.preventDefault();
+                  if (setView) setView('pricing');
+                } else if (isLoginLink) {
+                  e.preventDefault();
+                  if (setView) setView('login');
+                } else if (currentView === 'pricing' && setView) {
+                  if (isHomeLink) e.preventDefault();
+                  setView('landing');
+                  setTimeout(() => {
+                    const el = document.getElementById(isHomeLink ? 'home' : link.toLowerCase());
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }, 0);
+                }
+              }}
+              className="text-xl mt-4 font-bold text-white/90 hover:text-acid transition-all active:scale-95"
+            >
+              {t(key)}
+            </a>
+          );
+        })}
+        </div>
+        <button
+          onClick={() => { setIsMenuOpen(false); setView && setView('signup'); }}
+          className="mt-4 px-10 py-3.5 rounded-full bg-acid text-void font-black text-lg shadow-[0_0_30px_rgba(232,245,50,0.3)] hover:scale-105 active:scale-95 transition-all uppercase tracking-tight"
+        >
           {t('navbar.signup')}
         </button>
       </div>

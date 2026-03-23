@@ -34,6 +34,7 @@ function App() {
   const { i18n } = useTranslation();
   // Navigation State for Demo
   const [view, setView] = useState('landing'); // landing, pharmacist, distributor, executive
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -89,18 +90,20 @@ function App() {
 
   return (
     <div className="relative w-full overflow-x-hidden">
-      {/* View Switcher Overlay for Demo */}
-      <div className="fixed bottom-6 right-6 z-[100] bg-void/80 backdrop-blur-md border border-white/10 p-2 rounded-2xl flex flex-col gap-2 shadow-2xl">
-        <p className="text-[10px] font-bold text-white/30 px-3 py-1 uppercase tracking-widest">Demo Views</p>
-        <button
-          onClick={() => setView('pharmacist')}
-          className="group px-4 py-2 rounded-xl text-xs font-bold bg-acid/10 text-acid hover:bg-acid hover:!text-black transition-all flex items-center justify-between gap-4"
-        >
-          Launch Dashboard <span className="text-acid group-hover:!text-black transition-all">→</span>
-        </button>
-      </div>
+      {/* View Switcher Overlay for Demo — Hide when menu is open */}
+      {!isMenuOpen && (
+        <div className="fixed bottom-6 right-6 z-[100] bg-void/80 backdrop-blur-md border border-white/10 p-2 rounded-2xl flex flex-col gap-2 shadow-2xl">
+          <p className="text-[10px] font-bold text-white/30 px-3 py-1 uppercase tracking-[0.2em]">Live System Preview</p>
+          <button
+            onClick={() => setView('pharmacist')}
+            className="group px-4 py-2 rounded-xl text-xs font-bold bg-acid/10 text-acid hover:bg-acid hover:!text-black transition-all flex items-center justify-between gap-4"
+          >
+            Launch Dashboard <span className="text-acid group-hover:!text-black transition-all">→</span>
+          </button>
+        </div>
+      )}
 
-      <Navbar setView={setView} currentView="landing" />
+      <Navbar setView={setView} currentView="landing" isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
       <main>
         <div id="home"><Hero key={i18n.language} /></div>
         <div id="features"><FeatureIntro /></div>
