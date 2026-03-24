@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './i18n';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { TextPlugin } from 'gsap/TextPlugin';
 import { CustomEase } from 'gsap/CustomEase';
+
+import { PATHS } from './routes/paths';
+import ProtectedRoute from './routes/ProtectedRoute';
+import RoleGuard from './routes/RoleGuard';
+import { useAuthStore } from './stores/authStore';
 
 // Landing Components
 import Navbar from './components/Navbar';
@@ -16,94 +22,81 @@ import UseCase from './landing/UseCase';
 import FAQ from './landing/FAQ';
 import FinalCTA from './landing/FinalCTA';
 import Footer from './components/Footer';
-import Pricing from './pages/Pricing';
+
+// Pages
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import Pricing from './pages/Pricing';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+import VerifyEmailPage from './pages/VerifyEmailPage';
+import AcceptInvitePage from './pages/AcceptInvitePage';
+import NotFoundPage from './pages/NotFoundPage';
+import PlaceholderPage from './pages/PlaceholderPage';
 
-// Dashboard Components
+// UI
+import { ToastContainer } from './components/ui/Toast';
+
+// Dashboard
 import DashboardLayout from './dashboard/Layout';
+import OverviewPage from './pages/dashboard/OverviewPage';
+import InventoryPage from './pages/dashboard/InventoryPage';
+import SettingsPage from './pages/dashboard/SettingsPage';
+import OrdersPage from './pages/dashboard/OrdersPage';
+import AlertsPage from './pages/dashboard/AlertsPage';
+import AgentsPage from './pages/dashboard/AgentsPage';
+import AIQueryPage from './pages/dashboard/AIQueryPage';
+import BillingPage from './pages/dashboard/BillingPage';
+import UsersPage from './pages/dashboard/UsersPage';
+import AuditLogPage from './pages/dashboard/AuditLogPage';
+import ErrorBoundary from './components/ErrorBoundary';
 
 gsap.registerPlugin(ScrollTrigger, TextPlugin, CustomEase);
 
-// Register PharmaAgent custom easing curves
+// Register CherriPlus custom easing curves
 CustomEase.create('pharma.out', 'M0,0 C0.16,1 0.3,1 1,1');
 CustomEase.create('pharma.inOut', 'M0,0 C0.5,0 0.5,1 1,1');
 CustomEase.create('pharma.spring', 'M0,0 C0.14,0 0.22,1.13 1,1');
 
-function App() {
+// ─── Landing Page ────────────────────────────────────────────────────────────
+const LandingPage = () => {
   const { i18n } = useTranslation();
-  // Navigation State for Demo
-  const [view, setView] = useState('landing'); // landing, pharmacist, distributor, executive
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      if (view === 'landing') {
-        // Universal reveal utility for landing page
-        gsap.utils.toArray('.reveal-section').forEach(section => {
-          const children = section.querySelectorAll('.reveal-child');
-          if (children.length > 0) {
-            gsap.fromTo(children,
-              { opacity: 0, y: 28 },
-              {
-                opacity: 1,
-                y: 0,
-                duration: 0.55,
-                stagger: 0.08,
-                ease: 'pharma.out',
-                scrollTrigger: {
-                  trigger: section,
-                  start: 'top 75%',
-                  once: true,
-                },
-              });
-          }
-        });
-      }
+      gsap.utils.toArray('.reveal-section').forEach((section) => {
+        const children = section.querySelectorAll('.reveal-child');
+        if (children.length > 0) {
+          gsap.fromTo(
+            children,
+            { opacity: 0, y: 28 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.55,
+              stagger: 0.08,
+              ease: 'pharma.out',
+              scrollTrigger: {
+                trigger: section,
+                start: 'top 75%',
+                once: true,
+              },
+            },
+          );
+        }
+      });
     });
-
     return () => ctx.revert();
-  }, [view]);
+  }, []);
 
-  // Switch to top on view change
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [view]);
-
-  if (view === 'pricing') {
-    return <Pricing setView={setView} />;
-  }
-
-  if (view === 'login') {
-    return <Login setView={setView} />;
-  }
-
-  if (view === 'signup') {
-    return <SignUp setView={setView} />;
-  }
-
-  if (view !== 'landing') {
-    return (
-      <DashboardLayout role={view.charAt(0).toUpperCase() + view.slice(1)} onBack={() => setView('landing')} />
-    );
-  }
+  }, []);
 
   return (
     <div className="relative w-full overflow-x-hidden">
-      {/* View Switcher Overlay for Demo — Hide when menu is open */}
-      {!isMenuOpen && (
-        <div className="fixed bottom-6 right-6 z-[100] bg-void/80 backdrop-blur-md border border-white/10 p-2 rounded-2xl flex flex-col gap-2 shadow-2xl">
-          <p className="text-[10px] font-bold text-white/30 px-3 py-1 uppercase tracking-[0.2em]">Live System Preview</p>
-          <button
-            onClick={() => setView('pharmacist')}
-            className="group px-4 py-2 rounded-xl text-xs font-bold bg-acid/10 text-acid hover:bg-acid hover:!text-black transition-all flex items-center justify-between gap-4"
-          >
-            Launch Dashboard <span className="text-acid group-hover:!text-black transition-all">→</span>
-          </button>
-        </div>
-      )}
-
-      <Navbar setView={setView} currentView="landing" isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+      <Navbar currentView="landing" isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
       <main>
         <div id="home"><Hero key={i18n.language} /></div>
         <div id="features"><FeatureIntro /></div>
@@ -115,6 +108,93 @@ function App() {
       </main>
       <Footer />
     </div>
+  );
+};
+
+// ─── App with Router ─────────────────────────────────────────────────────────
+function App() {
+  const location = useLocation();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const fetchMe = useAuthStore((s) => s.fetchMe);
+
+  // On app load: if tokens exist but user isn't fetched, validate session
+  useEffect(() => {
+    if (accessToken && isAuthenticated) {
+      fetchMe().catch(() => {
+        // fetchMe failed — interceptor will handle refresh/logout
+      });
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  return (
+    <ErrorBoundary>
+      <Routes>
+        {/* ── Public Routes ─────────────────────────────────────────────── */}
+        <Route path={PATHS.home} element={<LandingPage />} />
+        <Route path={PATHS.login} element={<Login />} />
+        <Route path={PATHS.signup} element={<SignUp />} />
+        <Route path={PATHS.pricing} element={<Pricing />} />
+        <Route path={PATHS.forgotPassword} element={<ForgotPasswordPage />} />
+        <Route path={PATHS.resetPassword} element={<ResetPasswordPage />} />
+        <Route path={PATHS.verifyEmail} element={<VerifyEmailPage />} />
+        <Route path={PATHS.acceptInvite} element={<AcceptInvitePage />} />
+
+        {/* ── Protected Dashboard Routes ────────────────────────────────── */}
+        <Route
+          path={PATHS.dashboard}
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route
+            index
+            element={<OverviewPage />}
+          />
+          <Route path="overview" element={<OverviewPage />} />
+          <Route path="inventory" element={<InventoryPage />} />
+          <Route path="medicines" element={<PlaceholderPage title="Medicines" />} />
+          <Route path="orders" element={<OrdersPage />} />
+          <Route path="orders/:orderId" element={<PlaceholderPage title="Order Detail" />} />
+          <Route path="suppliers" element={<PlaceholderPage title="Suppliers" />} />
+          <Route path="alerts" element={<AlertsPage />} />
+          <Route path="agents" element={<AgentsPage />} />
+          <Route path="agents/:agentActionId" element={<PlaceholderPage title="Agent Detail" />} />
+          {/* <Route path="ai-query" element={<AIQueryPage />} /> */}
+          <Route path="redistributions" element={<PlaceholderPage title="Redistributions" />} />
+          <Route path="billing" element={<BillingPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route
+            path="users"
+            element={
+              <RoleGuard allowedRoles={['ADMIN', 'MANAGER']}>
+                <UsersPage />
+              </RoleGuard>
+            }
+          />
+          <Route
+            path="audit-log"
+            element={
+              <RoleGuard allowedRoles={['ADMIN']}>
+                <AuditLogPage />
+              </RoleGuard>
+            }
+          />
+        </Route>
+
+        {/* ── 404 ───────────────────────────────────────────────────────── */}
+        <Route path={PATHS.notFound} element={<NotFoundPage />} />
+        <Route path="*" element={<Navigate to={PATHS.notFound} replace />} />
+      </Routes>
+      <ToastContainer />
+    </ErrorBoundary>
   );
 }
 

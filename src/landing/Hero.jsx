@@ -99,6 +99,7 @@ const Hero = () => {
         <div className="particle absolute top-[35%] right-[20%] w-1.5 h-1.5 bg-white/30 rounded-full"></div>
         <div className="particle absolute top-[60%] right-[10%] w-1 h-1 bg-acid/20 rounded-full"></div>
         <div className="particle absolute top-[15%] right-[30%] w-1 h-1 bg-white/20 rounded-full"></div>
+
       </div>
 
       <div className="hero-eyebrow mb-6">
@@ -157,9 +158,9 @@ const Hero = () => {
       >
         <div className="h-8 bg-white/5 flex items-center px-4 gap-2 border-b border-white/10">
           <div className="flex gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-white/10"></div>
-            <div className="w-2.5 h-2.5 rounded-full bg-white/10"></div>
-            <div className="w-2.5 h-2.5 rounded-full bg-white/10"></div>
+            <div className="w-2.5 h-2.5 rounded-full bg-danger/20"></div>
+            <div className="w-2.5 h-2.5 rounded-full bg-warn/20"></div>
+            <div className="w-2.5 h-2.5 rounded-full bg-success/20"></div>
           </div>
           <div className="flex-1 flex justify-center">
             <div className="w-32 h-1.5 rounded-full bg-white/5"></div>
@@ -197,14 +198,14 @@ const Hero = () => {
               </div>
               <div className="flex justify-between border-t border-white/5 pt-2 mt-1">
                 <span className="text-[10px] font-medium text-white/50">{t('hero.mock.inv_overview')}</span>
+              </div>
             </div>
-          </div>
-          <div className="bg-white/5 border border-white/10 p-4 rounded-xl h-28 flex flex-col items-center justify-center gap-2 relative">
-            <div className="w-14 h-14 rounded-full border-[4px] border-danger border-t-acid border-r-acid border-b-acid flex items-center justify-center relative shadow-[0_0_15px_rgba(232,245,50,0.15)]">
-              <div className="text-[12px] font-bold text-white">98%</div>
+            <div className="bg-white/5 border border-white/10 p-4 rounded-xl h-28 flex flex-col items-center justify-center gap-2 relative">
+              <div className="w-14 h-14 rounded-full border-[4px] border-danger border-t-acid border-r-acid border-b-acid flex items-center justify-center relative shadow-[0_0_15px_rgba(232,245,50,0.15)]">
+                <div className="text-[12px] font-bold text-white">98%</div>
+              </div>
+              <span className="text-[10px] font-medium text-white/50 mt-1">{t('hero.mock.net_health')}</span>
             </div>
-            <span className="text-[10px] font-medium text-white/50 mt-1">{t('hero.mock.net_health')}</span>
-          </div>
           </div>
 
           <div className="w-full bg-dark/80 border-t border-white/10 p-2 overflow-hidden whitespace-nowrap flex items-center">

@@ -1,47 +1,40 @@
 import React, { useState } from 'react';
+import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home, Box, Cpu, LineChart, RefreshCw,
-  ClipboardList, AlertTriangle, Settings,
+  ClipboardList, AlertTriangle, Settings, Sparkles,
   BarChart3, Bell, Search,
-  ChevronLeft, ChevronRight, User
+  ChevronLeft, ChevronRight, User, Users, LogOut, CreditCard
 } from 'lucide-react';
 
-// Dashboard views
-import PharmacistView from './PharmacistView';
-import InventoryView from './InventoryView';
-import AIAgentsView from './AIAgentsView';
-import OrdersView from './OrdersView';
-import AlertsView from './AlertsView';
-import SettingsView from './SettingsView';
+import { PATHS } from '../routes/paths';
+import { useAuthStore } from '../stores/authStore';
+
 import NLQueryTerminal from './NLQueryTerminal';
 import MobileRestriction from './components/MobileRestriction';
 
-const VIEWS = {
-  overview: PharmacistView,
-  inventory: InventoryView,
-  agents: AIAgentsView,
-  orders: OrdersView,
-  alerts: AlertsView,
-  settings: SettingsView,
-};
+const menuItems = [
+  { icon: Home, label: 'Overview', path: PATHS.dashboard, end: true },
+  { icon: Box, label: 'Inventory', path: PATHS.inventory },
+  { icon: LineChart, label: 'Forecasting', path: null, disabled: true },
+  { icon: RefreshCw, label: 'Redistribution', path: `${PATHS.dashboard}/redistributions`, disabled: true },
+  { icon: ClipboardList, label: 'Orders', path: PATHS.orders },
+  { icon: AlertTriangle, label: 'Alerts', path: PATHS.alerts, badge: 12, badgeColor: 'bg-danger/20 text-danger' },
+  { icon: CreditCard, label: 'Billing', path: PATHS.billing },
+  { icon: Settings, label: 'Settings', path: `${PATHS.dashboard}/settings` },
+];
 
-const DashboardLayout = ({ children, role = 'Pharmacist', onBack }) => {
+const DashboardLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [activePage, setActivePage] = useState('overview');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
 
-  const menuItems = [
-    { icon: Home, label: 'Overview', id: 'overview' },
-    { icon: Box, label: 'Inventory', id: 'inventory' },
-    { icon: Cpu, label: 'AI Agents', id: 'agents', badge: 3 },
-    { icon: LineChart, label: 'Forecasting', id: 'forecasting', disabled: true },
-    { icon: RefreshCw, label: 'Redistribution', id: 'redistribution', disabled: true },
-    { icon: ClipboardList, label: 'Orders', id: 'orders' },
-    { icon: AlertTriangle, label: 'Alerts', id: 'alerts', badge: 12, badgeColor: 'bg-danger/20 text-danger' },
-    { icon: BarChart3, label: 'Analytics', id: 'analytics', disabled: true },
-    { icon: Settings, label: 'Settings', id: 'settings' },
-  ];
-
-  const ActiveView = VIEWS[activePage] || PharmacistView;
+  const handleLogout = async () => {
+    await logout();
+    navigate(PATHS.login, { replace: true });
+  };
 
   return (
     <div className="flex h-screen bg-void text-white overflow-hidden relative">
@@ -52,71 +45,108 @@ const DashboardLayout = ({ children, role = 'Pharmacist', onBack }) => {
       <aside
         className={`${isCollapsed ? 'md:w-20' : 'lg:w-64 md:w-20 w-0'} bg-navy border-r border-white/5 flex flex-col transition-all duration-300 z-30 md:flex hidden`}
       >
-        <div className="h-14 flex items-center px-6 border-b border-white/5 gap-3">
-          <div className="w-2 h-2 rounded-full bg-acid shadow-[0_0_10px_rgba(232,245,50,0.5)] flex-shrink-0"></div>
-          {(!isCollapsed) && (
-            <span className="font-bold tracking-tight lg:inline hidden">CherriPlus</span>
-          )}
-        </div>
-
-        <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
-          {menuItems.map((item) => {
-            const isActive = activePage === item.id;
-            return (
-              <button
-                key={item.id}
-                disabled={item.disabled}
-                onClick={() => !item.disabled && setActivePage(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group relative ${isActive
-                    ? 'bg-acid/10 text-acid border-l-[3px] border-acid rounded-l-none'
-                    : item.disabled
-                      ? 'text-white/20 cursor-not-allowed opacity-60'
-                      : 'text-white/50 hover:bg-white/5 hover:text-white'
-                  }`}
-              >
-                <item.icon size={20} className={isActive ? 'text-acid' : ''} />
-                {!isCollapsed && (
-                  <span className="text-sm font-medium lg:inline hidden">
-                    {item.label}
-                    {item.disabled && (
-                      <sup className="text-[8px] font-bold text-acid/90 uppercase tracking-widest animate-pulse ml-1">
-                        soon
-                      </sup>
-                    )}
-                  </span>
-                )}
-                {item.badge && !isCollapsed && (
-                  <span className={`ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded lg:inline hidden ${item.badgeColor || 'bg-acid/20 text-acid'}`}>
-                    {item.badge}
-                  </span>
-                )}
-                {isCollapsed && (
-                  <div className="absolute left-16 bg-navy border border-white/10 px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
-                    {item.label}
-                  </div>
-                )}
-              </button>
-            );
-          })}
-        </nav>
-
-        <div className="p-4 border-t border-white/5 space-y-4">
-          <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : ''}`}>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-acid/30 to-acid/60 flex items-center justify-center shrink-0">
-              <User size={16} className="text-void" />
-            </div>
+        <div className="h-14 flex items-center px-4 border-b border-white/5 justify-between">
+          <div className="flex items-center gap-3 overflow-hidden">
+            <div className="w-2 h-2 rounded-full bg-acid shadow-[0_0_10px_rgba(232,245,50,0.5)] flex-shrink-0"></div>
             {!isCollapsed && (
-              <div className="flex-1 truncate lg:block hidden">
-                <p className="text-xs font-bold text-white leading-none mb-1">Priya K.</p>
-                <p className="text-[10px] text-white/40 leading-none">{role}</p>
-              </div>
+              <span className="font-bold tracking-tight lg:inline hidden">CherriPlus</span>
             )}
           </div>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="w-full h-8 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-md text-white/40 hover:text-white transition-all lg:flex hidden"
+            className="p-1.5 hover:bg-white/5 rounded-md text-white/40 hover:text-white transition-all"
           >
             {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+          </button>
+        </div>
+
+        <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+          {menuItems.map((item) => {
+            if (item.disabled || !item.path) {
+              return (
+                <button
+                  key={item.label}
+                  disabled
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/20 cursor-not-allowed opacity-60"
+                >
+                  <item.icon size={20} />
+                  {!isCollapsed && (
+                    <span className="text-sm font-medium lg:inline hidden">
+                      {item.label}
+                      <sup className="text-[8px] font-bold text-acid/90 uppercase tracking-widest animate-pulse ml-1">
+                        soon
+                      </sup>
+                    </span>
+                  )}
+                </button>
+              );
+            }
+
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                end={item.end}
+                className={({ isActive }) =>
+                  `w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group relative ${isActive
+                    ? 'bg-acid/10 text-acid border-l-[3px] border-acid rounded-l-none'
+                    : 'text-white/50 hover:bg-white/5 hover:text-white'
+                  }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <item.icon size={20} className={isActive ? 'text-acid' : ''} />
+                    {!isCollapsed && (
+                      <span className="text-sm font-medium lg:inline hidden">
+                        {item.label}
+                      </span>
+                    )}
+                    {item.badge && !isCollapsed && (
+                      <span
+                        className={`ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded lg:inline hidden ${item.badgeColor || 'bg-acid/20 text-acid'
+                          }`}
+                      >
+                        {item.badge}
+                      </span>
+                    )}
+                    {isCollapsed && (
+                      <div className="absolute left-16 bg-navy border border-white/10 px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+                        {item.label}
+                      </div>
+                    )}
+                  </>
+                )}
+              </NavLink>
+            );
+          })}
+
+          {/* Admin Only: Team Management */}
+          {(user?.role?.toUpperCase() === 'ADMIN' || user?.role?.toUpperCase() === 'MANAGER') && (
+            <NavLink
+              to={PATHS.users}
+              className={({ isActive }) =>
+                `w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group relative ${
+                  isActive
+                    ? 'bg-acid/10 text-acid border-l-[3px] border-acid rounded-l-none'
+                    : 'text-white/50 hover:bg-white/5 hover:text-white'
+                }`
+              }
+            >
+              <Users size={20} />
+              {!isCollapsed && <span className="text-sm font-medium lg:inline hidden">Team</span>}
+            </NavLink>
+          )}
+        </nav>
+
+        <div className="p-4 border-t border-white/5">
+          <button
+            onClick={handleLogout}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/40 hover:bg-danger/10 hover:text-danger transition-all ${isCollapsed ? 'justify-center' : ''}`}
+            title="Logout"
+          >
+            <LogOut size={20} />
+            {!isCollapsed && <span className="text-sm font-medium lg:inline hidden">Logout</span>}
           </button>
         </div>
       </aside>
@@ -137,33 +167,39 @@ const DashboardLayout = ({ children, role = 'Pharmacist', onBack }) => {
           </div>
 
           <div className="flex items-center gap-4 md:gap-6">
-            {onBack && (
-              <>
-                <button onClick={onBack} className="text-xs font-bold text-white/40 hover:text-white transition-colors flex items-center gap-1">
-                  <ChevronLeft size={14} /> <span className="hidden sm:inline">Landing</span>
-                </button>
-                <div className="h-6 w-px bg-white/10 hidden sm:block"></div>
-              </>
-            )}
-            <button
-              onClick={() => setActivePage('alerts')}
+            <NavLink
+              to={PATHS.alerts}
               className="relative text-white/50 hover:text-white transition-colors"
             >
               <Bell size={20} />
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-danger rounded-full ring-2 ring-void"></span>
-            </button>
+            </NavLink>
             <div className="h-6 w-px bg-white/10"></div>
             <button className="text-sm font-bold text-acid flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-acid animate-pulse"></div>
               <span className="hidden md:inline">Agent Live</span>
             </button>
+
+            {/* User Profile - Global Topbar */}
+            <div className="flex items-center gap-3  px-4 py-2">
+              <div className="text-right hidden sm:block">
+                <p className="text-[11px] font-bold text-white leading-none mb-1">
+                  {user?.first_name || 'Pharmacist'} {user?.last_name || ''}
+                </p>
+                <p className="text-[9px] text-white/30 font-mono uppercase tracking-widest leading-none">
+                  {user?.role || 'User'}
+                </p>
+              </div>
+              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-acid/30 to-acid/60 flex items-center justify-center border border-white/10 shrink-0">
+                <User className="text-void" size={14} />
+              </div>
+            </div>
           </div>
         </header>
 
         {/* Content View */}
         <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-[radial-gradient(circle_at_top_right,rgba(232,245,50,0.015)_0%,transparent_50%)] relative">
-          {/* Render children (role switcher) if passed, otherwise show active page */}
-          {children ? children : <ActiveView />}
+          <Outlet />
 
           {/* NL Query Terminal — always floating */}
           <NLQueryTerminal />

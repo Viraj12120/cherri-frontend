@@ -1,46 +1,70 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Mail, Lock, AlertCircle, Loader2, Apple, User, Hospital } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { PATHS } from '../routes/paths';
+import { useAuthStore } from '../stores/authStore';
 import signupBg from '../assets/med.jpg';
 
-const SignUp = ({ setView }) => {
+const SignUp = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     email: '',
     networkName: '',
-    password: ''
+    password: '',
+    confirmPassword: '',
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+
+  const register = useAuthStore((s) => s.register);
+  const isLoading = useAuthStore((s) => s.isLoading);
+  const error = useAuthStore((s) => s.error);
+  const clearError = useAuthStore((s) => s.clearError);
+
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear field error on change
+    if (fieldErrors[e.target.name]) {
+      setFieldErrors((prev) => ({ ...prev, [e.target.name]: null }));
+    }
   };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
 
-    try {
-      const response = await fetch('/api/v1/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+    // Frontend validation
+    const errors = {};
+    if (formData.password.length < 8) {
+      errors.password = 'Password must be at least 8 characters.';
+    }
+    if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match.';
+    }
+    if (!formData.networkName.trim()) {
+      errors.networkName = 'Organization name is required.';
+    }
 
-      if (!response.ok) {
-        throw new Error('Failed to create account.');
-      }
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
 
-      setView('login');
-    } catch (err) {
-      setError('Failed to connect to the server.');
-      setIsLoading(false);
+    const success = await register({
+      tenantName: formData.networkName,
+      email: formData.email,
+      password: formData.password,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+    });
+
+    if (success) {
+      navigate(PATHS.dashboard, { replace: true });
     }
   };
 
@@ -64,12 +88,12 @@ const SignUp = ({ setView }) => {
       <div className="w-full lg:w-[35%] flex flex-col pt-12 pb-8 px-8 sm:px-16 lg:px-12 relative bg-[#0f0f11] overflow-y-auto">
         
         {/* Back Button */}
-        <button 
-          onClick={() => setView('landing')}
+        <Link 
+          to={PATHS.home}
           className="absolute top-6 left-6 text-white/50 hover:text-white transition-colors p-2 z-10"
         >
           <ArrowLeft size={20} />
-        </button>
+        </Link>
 
         <div className="flex flex-col items-center justify-center flex-1 w-full max-w-[340px] mx-auto py-8">
           
@@ -109,7 +133,7 @@ const SignUp = ({ setView }) => {
 
               {/* Email Button */}
               <button 
-                onClick={() => setShowEmailForm(true)}
+                onClick={() => { setShowEmailForm(true); clearError(); }}
                 className="w-full bg-transparent border border-white/10 hover:border-white/30 rounded-[8px] py-3 px-4 flex items-center gap-3 transition-colors justify-center"
               >
                 <Mail size={16} strokeWidth={2.5} />
@@ -119,9 +143,9 @@ const SignUp = ({ setView }) => {
               <div className="mt-8 flex flex-col gap-5 items-center pb-8">
                 <p className="text-[12px] text-[#a0a0a0]">
                   {t('auth.already_account')}{' '}
-                  <button onClick={() => setView('login')} className="text-[#3b82f6] hover:underline font-bold transition-all">
+                  <Link to={PATHS.login} className="text-[#3b82f6] hover:underline font-bold transition-all">
                     {t('auth.login_link')}
-                  </button>
+                  </Link>
                 </p>
                 <a href="#" className="text-[#3b82f6] hover:underline text-[12px] font-bold transition-colors">
                   {t('auth.cookies')}
@@ -137,21 +161,38 @@ const SignUp = ({ setView }) => {
                 </div>
               )}
 
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[12px] font-bold text-white/70 ml-1">{t('auth.fullname_label')}</label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/30 group-focus-within:text-white transition-colors">
-                    <User size={16} />
+              <div className="flex gap-3">
+                <div className="flex flex-col gap-1.5 flex-1">
+                  <label className="text-[12px] font-bold text-white/70 ml-1">First Name</label>
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/30 group-focus-within:text-white transition-colors">
+                      <User size={16} />
+                    </div>
+                    <input
+                      type="text"
+                      name="firstName"
+                      required
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      placeholder="First Name"
+                      className="w-full bg-transparent border border-white/20 rounded-[8px] py-3 pl-10 pr-4 text-[13px] text-white placeholder-white/20 focus:outline-none focus:border-white transition-all font-light"
+                    />
                   </div>
-                  <input
-                    type="text"
-                    name="fullName"
-                    required
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    placeholder={t('auth.fullname_placeholder')}
-                    className="w-full bg-transparent border border-white/20 rounded-[8px] py-3 pl-10 pr-4 text-[13px] text-white placeholder-white/20 focus:outline-none focus:border-white transition-all font-light"
-                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5 flex-1">
+                  <label className="text-[12px] font-bold text-white/70 ml-1">Last Name</label>
+                  <div className="relative group">
+                    <input
+                      type="text"
+                      name="lastName"
+                      required
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      placeholder="Last Name"
+                      className="w-full bg-transparent border border-white/20 rounded-[8px] py-3 px-4 text-[13px] text-white placeholder-white/20 focus:outline-none focus:border-white transition-all font-light"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -182,12 +223,18 @@ const SignUp = ({ setView }) => {
                   <input
                     type="text"
                     name="networkName"
+                    required
                     value={formData.networkName}
                     onChange={handleChange}
-                    placeholder={t('auth.hospital_placeholder')}
-                    className="w-full bg-transparent border border-white/20 rounded-[8px] py-3 pl-10 pr-4 text-[13px] text-white placeholder-white/20 focus:outline-none focus:border-white transition-all font-light"
+                    placeholder="E.g., City General Hospital"
+                    className={`w-full bg-transparent border rounded-[8px] py-3 pl-10 pr-4 text-[13px] text-white placeholder-white/20 focus:outline-none focus:border-white transition-all font-light ${
+                      fieldErrors.networkName ? 'border-danger/50' : 'border-white/20'
+                    }`}
                   />
                 </div>
+                {fieldErrors.networkName && (
+                  <span className="text-danger text-[11px] ml-1">{fieldErrors.networkName}</span>
+                )}
               </div>
 
               <div className="flex flex-col gap-1.5 mt-2">
@@ -203,15 +250,43 @@ const SignUp = ({ setView }) => {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder={t('auth.create_password_placeholder')}
-                    className="w-full bg-transparent border border-white/20 rounded-[8px] py-3 pl-10 pr-4 text-[13px] text-white placeholder-white/20 focus:outline-none focus:border-white transition-all font-light"
+                    className={`w-full bg-transparent border rounded-[8px] py-3 pl-10 pr-4 text-[13px] text-white placeholder-white/20 focus:outline-none focus:border-white transition-all font-light ${
+                      fieldErrors.password ? 'border-danger/50' : 'border-white/20'
+                    }`}
                   />
                 </div>
+                {fieldErrors.password && (
+                  <span className="text-danger text-[11px] ml-1">{fieldErrors.password}</span>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1.5 mt-2">
+                <label className="text-[12px] font-bold text-white/70 ml-1">Confirm Password</label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/30 group-focus-within:text-white transition-colors">
+                    <Lock size={16} />
+                  </div>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    required
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    placeholder="Confirm your password"
+                    className={`w-full bg-transparent border rounded-[8px] py-3 pl-10 pr-4 text-[13px] text-white placeholder-white/20 focus:outline-none focus:border-white transition-all font-light ${
+                      fieldErrors.confirmPassword ? 'border-danger/50' : 'border-white/20'
+                    }`}
+                  />
+                </div>
+                {fieldErrors.confirmPassword && (
+                  <span className="text-danger text-[11px] ml-1">{fieldErrors.confirmPassword}</span>
+                )}
               </div>
 
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-white text-void font-bold py-3 rounded-[8px] hover:bg-gray-100 flex items-center justify-center gap-2 mt-4 text-[13px] transition-colors"
+                className="w-full bg-white text-void font-bold py-3 rounded-[8px] hover:bg-gray-100 flex items-center justify-center gap-2 mt-4 text-[13px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? <Loader2 size={16} className="animate-spin" /> : t('auth.create_account_button')}
               </button>
@@ -222,7 +297,7 @@ const SignUp = ({ setView }) => {
 
               <button 
                 type="button"
-                onClick={() => setShowEmailForm(false)}
+                onClick={() => { setShowEmailForm(false); clearError(); }}
                 className="text-white/50 hover:text-white text-[12px] font-semibold mt-4 transition-colors"
               >
                 {t('auth.back_options')}

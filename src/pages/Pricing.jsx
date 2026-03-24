@@ -4,7 +4,7 @@ import Footer from '../components/Footer';
 import { Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-const Pricing = ({ setView }) => {
+const Pricing = () => {
   const { t } = useTranslation();
 
   const DefaultLimits = {
@@ -99,7 +99,7 @@ const Pricing = ({ setView }) => {
 
   return (
     <div className="min-h-screen bg-void flex flex-col font-sans">
-      <Navbar setView={setView} currentView="pricing" />
+      <Navbar currentView="pricing" />
 
       <main className="flex-1 pt-32 pb-24 px-6 md:px-12 lg:px-20 relative overflow-hidden">
         {/* Background Gradients */}

@@ -1,44 +1,32 @@
 import React, { useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Mail, Lock, AlertCircle, Loader2, Apple } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { PATHS } from '../routes/paths';
+import { useAuthStore } from '../stores/authStore';
 import loginBg from '../assets/login.jpg';
 
-const Login = ({ setView }) => {
+const Login = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get('redirect') || PATHS.dashboard;
+
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+
+  const login = useAuthStore((s) => s.login);
+  const isLoading = useAuthStore((s) => s.isLoading);
+  const error = useAuthStore((s) => s.error);
+  const clearError = useAuthStore((s) => s.clearError);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
 
-    try {
-      const response = await fetch('/api/v1/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          username: email,
-          password: password,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Invalid credentials');
-      }
-
-      const data = await response.json();
-      localStorage.setItem('cherri_token', data.access_token);
-      
-      setView('pharmacist');
-    } catch (err) {
-      setError('Failed to connect to the server.');
-      setIsLoading(false);
+    const success = await login(email, password);
+    if (success) {
+      navigate(redirectTo, { replace: true });
     }
   };
 
@@ -62,12 +50,12 @@ const Login = ({ setView }) => {
       <div className="w-full lg:w-[35%] flex flex-col pt-12 pb-8 px-8 sm:px-16 lg:px-12 relative bg-[#0f0f11]">
         
         {/* Back Button */}
-        <button 
-          onClick={() => setView('landing')}
+        <Link 
+          to={PATHS.home}
           className="absolute top-6 left-6 text-white/50 hover:text-white transition-colors p-2 z-10"
         >
           <ArrowLeft size={20} />
-        </button>
+        </Link>
 
         <div className="flex flex-col items-center justify-center flex-1 w-full max-w-[340px] mx-auto">
           
@@ -84,7 +72,7 @@ const Login = ({ setView }) => {
             <div className="w-full flex flex-col gap-3">
               {/* Google SSO Button */}
               <button 
-                onClick={() => setView('pharmacist')}
+                onClick={() => navigate(PATHS.dashboard)}
                 className="w-full bg-[#202022] hover:bg-[#2a2a2c] border border-white/5 rounded-[8px] p-2 flex items-center justify-between transition-colors shadow-sm"
               >
                 <div className="flex items-center gap-3">
@@ -114,7 +102,7 @@ const Login = ({ setView }) => {
 
               {/* Email Button */}
               <button 
-                onClick={() => setShowEmailForm(true)}
+                onClick={() => { setShowEmailForm(true); clearError(); }}
                 className="w-full bg-transparent border border-white/10 hover:border-white/30 rounded-[8px] py-3 px-4 flex items-center justify-center gap-3 transition-colors"
               >
                 <Mail size={16} strokeWidth={2.5} />
@@ -128,9 +116,9 @@ const Login = ({ setView }) => {
                 
                 <p className="text-[12px] text-[#a0a0a0]">
                   {t('auth.no_account')}{' '}
-                  <button onClick={() => setView('signup')} className="text-[#3b82f6] hover:underline font-bold transition-all">
+                  <Link to={PATHS.signup} className="text-[#3b82f6] hover:underline font-bold transition-all">
                     {t('auth.signup_link')}
-                  </button>
+                  </Link>
                 </p>
                 
                 <a href="#" className="text-[#3b82f6] hover:underline text-[12px] font-bold transition-colors mt-2">
@@ -181,17 +169,23 @@ const Login = ({ setView }) => {
                 </div>
               </div>
 
+              <div className="flex justify-end">
+                <Link to={PATHS.forgotPassword} className="text-[11px] text-[#3b82f6] hover:underline font-medium">
+                  Forgot password?
+                </Link>
+              </div>
+
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-white text-void font-bold py-3 rounded-[8px] hover:bg-gray-100 flex items-center justify-center gap-2 mt-4 text-[13px] transition-colors"
+                className="w-full bg-white text-void font-bold py-3 rounded-[8px] hover:bg-gray-100 flex items-center justify-center gap-2 mt-4 text-[13px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? <Loader2 size={16} className="animate-spin" /> : t('auth.login_button')}
               </button>
 
               <button 
                 type="button"
-                onClick={() => setShowEmailForm(false)}
+                onClick={() => { setShowEmailForm(false); clearError(); }}
                 className="text-white/50 hover:text-white text-[12px] font-semibold mt-4 transition-colors"
               >
                 {t('auth.back_options')}
