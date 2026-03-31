@@ -57,7 +57,7 @@
     },
     "starter": {
       "name": "Démarrage",
-      "price": "25€",
+      "price": "249€",
       "period": "/mois",
       "target": "Petite pharmacie indépendante",
       "cta": "Commencer",
@@ -82,7 +82,7 @@
     },
     "pro": {
       "name": "Pro",
-      "price": "129€",
+      "price": "449€",
       "period": "/mois",
       "target": "Distributeur ou chaîne multisites",
       "cta": "Passer à Pro",

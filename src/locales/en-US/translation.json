@@ -57,7 +57,7 @@
     },
     "starter": {
       "name": "Starter",
-      "price": "$29",
+      "price": "$299",
       "period": "/month",
       "target": "Small independent pharmacy or clinic",
       "cta": "Get Started",
@@ -82,7 +82,7 @@
     },
     "pro": {
       "name": "Pro",
-      "price": "$149",
+      "price": "$599",
       "period": "/month",
       "target": "Distributor or multi-location pharmacy chain",
       "cta": "Go Pro",

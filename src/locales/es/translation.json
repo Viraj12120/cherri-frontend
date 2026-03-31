@@ -57,7 +57,7 @@
     },
     "starter": {
       "name": "Inicial",
-      "price": "€25",
+      "price": "€199",
       "period": "/mes",
       "target": "Farmacia independiente pequeña",
       "cta": "Comenzar",
@@ -82,7 +82,7 @@
     },
     "pro": {
       "name": "Pro",
-      "price": "€129",
+      "price": "€379",
       "period": "/mes",
       "target": "Distribuidor o cadena en múltiples ubicaciones",
       "cta": "Ir a Pro",

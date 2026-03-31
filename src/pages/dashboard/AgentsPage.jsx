@@ -25,7 +25,8 @@ const AgentsPage = () => {
     fetchAgentLogs, 
     triggerReplenishment,
     runningAgents,
-    getCooldownRemaining
+    getCooldownRemaining,
+    getDailyLimitInfo
   } = useAgentStore();
   const addToast = useUiStore(s => s.addToast);
 
@@ -66,6 +67,9 @@ const AgentsPage = () => {
       setTriggerLoading(prev => ({ ...prev, [agentId]: false }));
     }
   };
+
+  const dailyInfo = getDailyLimitInfo ? getDailyLimitInfo() : { count: 0, limit: 2 };
+  const triggersLeft = Math.max(0, dailyInfo.limit - dailyInfo.count);
 
   const agents = [
     {
@@ -113,6 +117,7 @@ const AgentsPage = () => {
           const cfg = statusConfig[agent.status] || statusConfig.idle;
           const isPending = triggerLoading[agent.id] || runningAgents['global'];
           const cooldown = getCooldownRemaining('global');
+          const isLimitReached = triggersLeft === 0;
 
           return (
             <div key={agent.id} className={`bg-[#161618] border rounded-xl p-6 relative overflow-hidden group transition-all hover:border-white/10 ${cfg.bg}`}>
@@ -146,11 +151,11 @@ const AgentsPage = () => {
 
               <button
                 onClick={() => handleTrigger(agent.id)}
-                disabled={isPending || (agent.id === 'replenishment' && cooldown > 0)}
+                disabled={isPending || (agent.id === 'replenishment' && (cooldown > 0 || isLimitReached))}
                 className="w-full h-10 rounded-xl bg-white/5 hover:bg-acid hover:text-black text-white/60 text-xs font-bold transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-acid active:scale-[0.98] disabled:opacity-50"
               >
                 {isPending ? <RefreshCw size={14} className="animate-spin" /> : <Play size={14} />}
-                {isPending ? 'Triggering...' : (cooldown > 0 && agent.id === 'replenishment' ? `Cooldown (${cooldown}s)` : 'Trigger Manually')}
+                {isPending ? 'Triggering...' : (agent.id === 'replenishment' ? (isLimitReached ? 'Daily Limit Reached' : (cooldown > 0 ? `Cooldown (${cooldown}s)` : `Trigger Manually (${triggersLeft} left)`)) : 'Trigger Manually')}
               </button>
             </div>
           );

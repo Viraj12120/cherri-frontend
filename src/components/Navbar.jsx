@@ -139,10 +139,10 @@ const Navbar = ({ currentView = 'landing', isMenuOpen, setIsMenuOpen }) => {
 
         <button
           onClick={handleLiveDashboard}
-          className="text-xs md:text-sm border border-acid/50 rounded-full px-4 py-1.5 text-acid hover:text-void hover:bg-acid transition-colors font-medium hidden sm:flex items-center gap-2 group"
+          className="text-xs md:text-sm border border-acid/50 rounded-full px-4 py-1.5 text-acid hover:!text-black hover:bg-acid transition-colors font-medium hidden sm:flex items-center gap-2 group"
         >
-          <div className="w-2 h-2 rounded-full bg-acid animate-pulse group-hover:bg-void"></div>
-          Live Dashboard
+          <div className="w-2 h-2 rounded-full bg-acid animate-pulse group-hover:!bg-black"></div>
+          <span className="group-hover:!text-black">Live Dashboard</span>
         </button>
 
         <Link

@@ -50,6 +50,7 @@ import BillingPage from './pages/dashboard/BillingPage';
 import UsersPage from './pages/dashboard/UsersPage';
 import AuditLogPage from './pages/dashboard/AuditLogPage';
 import ErrorBoundary from './components/ErrorBoundary';
+import OfflineBanner from './components/OfflineBanner';
 
 gsap.registerPlugin(ScrollTrigger, TextPlugin, CustomEase);
 
@@ -134,6 +135,7 @@ function App() {
 
   return (
     <ErrorBoundary>
+      <OfflineBanner />
       <Routes>
         {/* ── Public Routes ─────────────────────────────────────────────── */}
         <Route path={PATHS.home} element={<LandingPage />} />

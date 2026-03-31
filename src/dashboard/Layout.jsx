@@ -16,12 +16,14 @@ import MobileRestriction from './components/MobileRestriction';
 const menuItems = [
   { icon: Home, label: 'Overview', path: PATHS.dashboard, end: true },
   { icon: Box, label: 'Inventory', path: PATHS.inventory },
-  { icon: LineChart, label: 'Forecasting', path: null, disabled: true },
-  { icon: RefreshCw, label: 'Redistribution', path: `${PATHS.dashboard}/redistributions`, disabled: true },
+
   { icon: ClipboardList, label: 'Orders', path: PATHS.orders },
   { icon: AlertTriangle, label: 'Alerts', path: PATHS.alerts, badge: 12, badgeColor: 'bg-danger/20 text-danger' },
+  { icon: Sparkles, label: 'AI Agents', path: PATHS.agents },
   { icon: CreditCard, label: 'Billing', path: PATHS.billing },
   { icon: Settings, label: 'Settings', path: `${PATHS.dashboard}/settings` },
+  { icon: LineChart, label: 'Forecasting', path: null, disabled: true },
+  { icon: RefreshCw, label: 'Redistribution', path: `${PATHS.dashboard}/redistributions`, disabled: true },
 ];
 
 const DashboardLayout = () => {
@@ -122,21 +124,20 @@ const DashboardLayout = () => {
           })}
 
           {/* Admin Only: Team Management */}
-          {(user?.role?.toUpperCase() === 'ADMIN' || user?.role?.toUpperCase() === 'MANAGER') && (
+          {/* {(user?.role?.toUpperCase() === 'ADMIN' || user?.role?.toUpperCase() === 'MANAGER') && (
             <NavLink
               to={PATHS.users}
               className={({ isActive }) =>
-                `w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group relative ${
-                  isActive
-                    ? 'bg-acid/10 text-acid border-l-[3px] border-acid rounded-l-none'
-                    : 'text-white/50 hover:bg-white/5 hover:text-white'
+                `w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group relative ${isActive
+                  ? 'bg-acid/10 text-acid border-l-[3px] border-acid rounded-l-none'
+                  : 'text-white/50 hover:bg-white/5 hover:text-white'
                 }`
               }
             >
               <Users size={20} />
               {!isCollapsed && <span className="text-sm font-medium lg:inline hidden">Team</span>}
             </NavLink>
-          )}
+          )} */}
         </nav>
 
         <div className="p-4 border-t border-white/5">

@@ -6,55 +6,66 @@ import { useUiStore } from '../../stores/uiStore';
 
 const PLANS = [
   {
-    id: 'plan_starter',
-    name: 'Starter',
-    price: '₹2,499',
-    period: 'per month',
-    description: 'Perfect for small local pharmacies starting their digital journey.',
+    id: 'plan_free',
+    name: 'Free Trial',
+    price: 'Rs 0',
+    period: 'for 14 days',
+    description: 'Any business wanting to try before buying.',
     features: [
-      'Inventory Tracking (up to 500 SKUs)',
-      'Basic Sales Reports',
-      'AI Replenishment Core',
-      'Single User Access',
+      'Up to 50 medicines',
+      '1 user, 1 location',
+      'No agent auto-orders',
       'Standard Support'
+    ],
+    color: 'from-gray-500/20 to-slate-500/20',
+    icon: Shield,
+    buttonText: 'Current Plan'
+  },
+  {
+    id: 'plan_clinics',
+    name: 'Starter',
+    price: 'Rs 4,999',
+    period: 'per month',
+    description: 'Best for clinics and stores.',
+    features: [
+      'Up to 1,000 medicines',
+      '5 users, 1 location',
+      'Both AI agents',
+      'Priority support'
     ],
     color: 'from-blue-500/20 to-indigo-500/20',
     icon: Zap,
-    buttonText: 'Get Started'
+    buttonText: 'Upgrade'
   },
   {
-    id: 'plan_professional',
-    name: 'Professional',
-    price: '₹5,999',
+    id: 'plan_distributor',
+    name: 'Pro',
+    price: 'Rs 7,999',
     period: 'per month',
-    description: 'Advanced analytics and multi-agent coordination for growing stores.',
+    description: 'Best for distributors.',
     features: [
-      'Unlimited SKUs',
-      'Advanced AI Insights',
-      'Multi-User (up to 5)',
-      'Supplier Integration',
-      'Priority Email Support',
-      'Custom Alert Thresholds'
+      'Unlimited medicines',
+      'Unlimited users, 10 locations',
+      'API access',
+      'Custom alerts'
     ],
     color: 'from-acid/10 to-emerald-500/10',
     borderColor: 'border-acid/30',
     badge: 'Most Popular',
     icon: Crown,
-    buttonText: 'Upgrade to Pro'
+    buttonText: 'Upgrade'
   },
   {
     id: 'plan_enterprise',
     name: 'Enterprise',
     price: 'Custom',
     period: 'contact sales',
-    description: 'Tailored solutions for large pharmacy chains and distributors.',
+    description: 'For company and hospitals.',
     features: [
-      'Multi-Location Support',
-      'White-label Dashboard',
-      'Dedicated Account Manager',
-      'Bulk Data Migration',
-      'On-premise AI training',
-      '24/7 Phone Support'
+      'Custom SLA',
+      'Dedicated server',
+      'Compliance reports',
+      'Integration support'
     ],
     color: 'from-purple-500/20 to-pink-500/20',
     icon: Building,
@@ -162,10 +173,9 @@ const BillingPage = () => {
          </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
         {PLANS.map((plan) => {
-          const isPro = plan.id === 'plan_professional';
-          const isStarter = plan.id === 'plan_starter';
+          const isPro = plan.id === 'plan_distributor';
           const isLoading = selectedPlan === plan.id;
 
           return (
