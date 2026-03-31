@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Package, AlertCircle, Clock, User, TrendingDown, TrendingUp, Check, X, Edit, ArrowRight, Cpu, Download, Plus, Search } from 'lucide-react';
+import { useTranslation, Trans } from 'react-i18next';
+import { Package, AlertCircle, Clock, User, TrendingDown, TrendingUp, Check, X, Edit, ArrowRight, Cpu, Download, Plus, Search, CheckCircle } from 'lucide-react';
 import api from '../../lib/axios';
 import { useUiStore } from '../../stores/uiStore';
 import Skeleton from '../../components/ui/Skeleton';
@@ -15,6 +16,7 @@ import ReorderModal from '../../dashboard/modals/ReorderModal';
 import EditSuggestionModal from '../../dashboard/modals/EditSuggestionModal';
 
 const OverviewPage = () => {
+  const { t } = useTranslation();
   const addToast = useUiStore((s) => s.addToast);
   const user = useAuthStore((s) => s.user);
 
@@ -78,7 +80,7 @@ const OverviewPage = () => {
       });
 
     } catch (err) {
-      addToast({ type: 'error', message: 'Failed to load overview data.' });
+      addToast({ type: 'error', message: t('common.error_load_data') || 'Failed to load overview data.' });
     } finally {
       setIsLoading(false);
     }
@@ -86,12 +88,12 @@ const OverviewPage = () => {
 
   const approveSuggestion = (qty = 2400, supplier = 'MediSource India') => {
     setSuggestion({ status: 'approved', qty, supplier });
-    addToast({ type: 'success', message: `✓ Order for ${qty.toLocaleString()} units approved and queued.` });
+    addToast({ type: 'success', message: `✓ ${t('dashboard.overview.suggestion.approved_title')}` });
   };
 
   const rejectSuggestion = () => {
     setSuggestion({ status: 'rejected' });
-    addToast({ type: 'info', message: '✕ Suggestion dismissed.' });
+    addToast({ type: 'info', message: t('dashboard.overview.suggestion.suggestion_dismissed') });
   };
 
   return (
@@ -114,17 +116,17 @@ const OverviewPage = () => {
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white mb-1">
-            Good morning, {user?.first_name || user?.email?.split('@')[0] || 'Member'}.
+            {t('dashboard.overview.greeting', { name: user?.first_name || user?.email?.split('@')[0] || 'Member' })}
           </h1>
-          <p className="text-white/40 text-sm">Live overview of your store's inventory health.</p>
+          <p className="text-white/40 text-sm">{t('dashboard.overview.subtitle')}</p>
         </div>
 
         <div className="flex gap-3">
           <button onClick={() => setShowExport(true)} className="bg-white/5 border border-white/10 text-xs font-bold px-4 py-2 rounded-lg hover:bg-white/10 transition-all flex items-center gap-2">
-            <Download size={14} /> Export Report
+            <Download size={14} /> {t('dashboard.overview.export_report')}
           </button>
           <button onClick={() => setShowManualOrder(true)} className="bg-acid text-void text-xs font-bold px-4 py-2 rounded-lg hover:brightness-110 transition-all flex items-center gap-2">
-            <Plus size={14} /> Manual Order
+            <Plus size={14} /> {t('dashboard.overview.manual_order')}
           </button>
         </div>
       </div>
@@ -134,19 +136,19 @@ const OverviewPage = () => {
         <div className="bg-gradient-to-r from-danger/20 to-transparent border-l-4 border-danger p-4 rounded-r-xl flex items-center justify-between">
           <div className="flex items-center gap-3">
             <AlertCircle className="text-danger" size={20} />
-            <span className="text-sm font-bold">{stats.critical} CRITICAL ITEMS REQUIRE ACTION</span>
+            <span className="text-sm font-bold">{t('dashboard.overview.critical_alert', { count: stats.critical })}</span>
           </div>
-          <button onClick={() => setShowCritical(true)} className="text-xs font-bold text-danger hover:underline">View All →</button>
+          <button onClick={() => setShowCritical(true)} className="text-xs font-bold text-danger hover:underline">{t('dashboard.overview.view_all')}</button>
         </div>
       )}
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: 'TOTAL STOCK', val: stats.total + ' SKUs', sub: 'Active inventory', icon: Package, color: 'text-acid' },
-          { label: 'CRITICAL', val: stats.critical, sub: 'Immediate action needed', icon: AlertCircle, color: 'text-danger' },
-          { label: 'LOW STOCK', val: stats.low, sub: 'Order soon', icon: TrendingDown, color: 'text-warn' },
-          { label: 'EXPIRING', val: stats.expiringSoon, sub: 'Within 30 days', icon: Clock, color: 'text-coral' }
+          { label: t('dashboard.overview.stats.total_stock'), val: stats.total + ' SKUs', sub: t('dashboard.overview.stats.total_sub'), icon: Package, color: 'text-acid' },
+          { label: t('dashboard.overview.stats.critical'), val: stats.critical, sub: t('dashboard.overview.stats.critical_sub'), icon: AlertCircle, color: 'text-danger' },
+          { label: t('dashboard.overview.stats.low_stock'), val: stats.low, sub: t('dashboard.overview.stats.low_sub'), icon: TrendingDown, color: 'text-warn' },
+          { label: t('dashboard.overview.stats.expiring'), val: stats.expiringSoon, sub: t('dashboard.overview.stats.expiring_sub'), icon: Clock, color: 'text-coral' }
         ].map((stat, i) => (
           <div key={i} className="bg-[#161618] border border-white/5 p-6 rounded-xl hover:border-white/15 transition-all group cursor-pointer">
             <div className="flex justify-between items-start mb-4">
@@ -167,22 +169,22 @@ const OverviewPage = () => {
         {/* Stock Table */}
         <div className="bg-[#161618] border border-white/5 rounded-xl overflow-hidden">
           <div className="p-6 border-b border-white/5 flex justify-between items-center">
-            <h4 className="font-bold text-sm uppercase tracking-wider text-white/60">Stock Health Preview</h4>
+            <h4 className="font-bold text-sm uppercase tracking-wider text-white/60">{t('dashboard.overview.table.title')}</h4>
             <div className="flex items-center gap-2 text-white/30">
               <Search size={13} />
-              <span className="text-[11px]">{items.length} items</span>
+              <span className="text-[11px]">{t('dashboard.overview.table.items_count', { count: items.length })}</span>
             </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs min-w-[600px] md:min-w-0">
               <thead className="text-white/30 uppercase tracking-wider border-b border-white/5">
                 <tr>
-                  <th className="px-6 py-4 font-medium">Drug Name</th>
-                  <th className="px-6 py-4 font-medium border-l border-white/5">Category</th>
-                  <th className="px-6 py-4 font-medium border-l border-white/5">Stock</th>
-                  <th className="px-6 py-4 font-medium">Min</th>
-                  <th className="px-6 py-4 font-medium border-l border-white/5">Status</th>
-                  <th className="px-6 py-4 font-medium text-right border-l border-white/5">Action</th>
+                  <th className="px-6 py-4 font-medium">{t('dashboard.overview.table.drug_name')}</th>
+                  <th className="px-6 py-4 font-medium border-l border-white/5">{t('dashboard.overview.table.category')}</th>
+                  <th className="px-6 py-4 font-medium border-l border-white/5">{t('dashboard.overview.table.stock')}</th>
+                  <th className="px-6 py-4 font-medium">{t('dashboard.overview.table.min')}</th>
+                  <th className="px-6 py-4 font-medium border-l border-white/5">{t('dashboard.overview.table.status')}</th>
+                  <th className="px-6 py-4 font-medium text-right border-l border-white/5">{t('dashboard.overview.table.action')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -214,7 +216,7 @@ const OverviewPage = () => {
                             onClick={(e) => { e.stopPropagation(); setReorderItem(row); }}
                             className="bg-acid/10 hover:bg-acid text-acid hover:!text-black px-3 py-1 rounded font-bold transition-all"
                           >
-                            Reorder
+                            {t('dashboard.overview.table.reorder')}
                           </button>
                         ) : (
                           <span className="text-white/20 text-[10px]">—</span>
@@ -238,16 +240,18 @@ const OverviewPage = () => {
                 <div className="w-5 h-5 rounded-full bg-acid flex items-center justify-center text-void">
                   <Cpu size={12} strokeWidth={3} />
                 </div>
-                <span className="text-xs font-bold font-mono text-acid tracking-wide uppercase">Cherri's Suggestion</span>
-                <span className="ml-auto text-[10px] text-white/30">Just now</span>
+                <span className="text-xs font-bold font-mono text-acid tracking-wide uppercase">{t('dashboard.overview.suggestion.badge')}</span>
+                <span className="ml-auto text-[10px] text-white/30">{t('dashboard.overview.suggestion.time')}</span>
               </div>
-              <h5 className="text-white font-bold text-sm mb-2">Reorder Metformin 500mg</h5>
+              <h5 className="text-white font-bold text-sm mb-2">{t('dashboard.overview.suggestion.title')}</h5>
               <p className="text-[11px] text-white/60 leading-relaxed mb-6">
-                Recommended: <span className="text-white font-bold">2,400 units</span>. Current stock covers 3 days. Demand spike (+34%) expected next week.
+                <Trans i18nKey="dashboard.overview.suggestion.desc" values={{ qty: '2,400', spike: '34' }}>
+                  Recommended: <span className="text-white font-bold">2,400 units</span>. Current stock covers 3 days. Demand spike (+34%) expected next week.
+                </Trans>
               </p>
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between items-baseline mb-1">
-                  <span className="text-[10px] text-white/30 uppercase font-bold tracking-widest">Confidence</span>
+                  <span className="text-[10px] text-white/30 uppercase font-bold tracking-widest">{t('dashboard.overview.suggestion.confidence')}</span>
                   <span className="text-xs font-bold text-acid">87%</span>
                 </div>
                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
@@ -256,12 +260,12 @@ const OverviewPage = () => {
               </div>
               <div className="flex gap-2">
                 <button onClick={() => approveSuggestion()} className="flex-1 bg-acid text-void h-8 rounded-lg text-xs font-bold flex items-center justify-center gap-1 hover:brightness-110 active:scale-95 transition-all">
-                  <Check size={14} /> Approve
+                  <Check size={14} /> {t('dashboard.overview.suggestion.approve')}
                 </button>
-                <button onClick={() => setShowEditSuggestion(true)} className="w-16 h-8 border border-white/10 rounded-lg flex items-center justify-center text-white/60 hover:text-white hover:bg-white/5 transition-all" title="Edit suggestion">
+                <button onClick={() => setShowEditSuggestion(true)} className="w-16 h-8 border border-white/10 rounded-lg flex items-center justify-center text-white/60 hover:text-white hover:bg-white/5 transition-all" title={t('dashboard.overview.suggestion.edit')}>
                   <Edit size={14} />
                 </button>
-                <button onClick={rejectSuggestion} className="w-8 h-8 flex items-center justify-center text-white/30 hover:text-danger transition-all" title="Reject">
+                <button onClick={rejectSuggestion} className="w-8 h-8 flex items-center justify-center text-white/30 hover:text-danger transition-all" title={t('dashboard.overview.suggestion.reject')}>
                   <X size={14} />
                 </button>
               </div>
@@ -271,24 +275,24 @@ const OverviewPage = () => {
           {suggestion.status === 'approved' && (
             <div className="bg-emerald-500/5 border-2 border-emerald-500/20 rounded-xl p-6 flex flex-col items-center gap-3 text-center">
               <CheckCircle size={28} className="text-emerald-500" />
-              <p className="font-bold text-sm text-white">Order Approved</p>
-              <p className="text-[11px] text-white/40">{suggestion.qty?.toLocaleString()} units of Metformin 500mg from {suggestion.supplier}. PO queued for processing.</p>
-              <button onClick={() => setSuggestion({ status: 'pending' })} className="text-[11px] font-bold text-white/30 hover:text-white mt-2">View next suggestion →</button>
+              <p className="font-bold text-sm text-white">{t('dashboard.overview.suggestion.approved_title')}</p>
+              <p className="text-[11px] text-white/40">{t('dashboard.overview.suggestion.approved_desc', { qty: suggestion.qty?.toLocaleString(), supplier: suggestion.supplier })}</p>
+              <button onClick={() => setSuggestion({ status: 'pending' })} className="text-[11px] font-bold text-white/30 hover:text-white mt-2">{t('dashboard.overview.suggestion.next_suggestion')}</button>
             </div>
           )}
 
           {suggestion.status === 'rejected' && (
             <div className="bg-white/5 border border-white/10 rounded-xl p-6 flex flex-col items-center gap-3 text-center">
               <X size={24} className="text-white/30" />
-              <p className="text-xs text-white/40">Suggestion dismissed.</p>
-              <button onClick={() => setSuggestion({ status: 'pending' })} className="text-[11px] font-bold text-acid hover:underline">Restore suggestion</button>
+              <p className="text-xs text-white/40">{t('dashboard.overview.suggestion.suggestion_dismissed')}</p>
+              <button onClick={() => setSuggestion({ status: 'pending' })} className="text-[11px] font-bold text-acid hover:underline">{t('dashboard.overview.suggestion.restore')}</button>
             </div>
           )}
 
           {/* Expiry Alerts */}
           <div className="bg-[#161618] border border-white/5 rounded-xl p-6">
             <div className="flex items-center justify-between mb-6">
-              <h5 className="text-xs font-bold text-white/40 uppercase tracking-widest">Expiry Alerts</h5>
+              <h5 className="text-xs font-bold text-white/40 uppercase tracking-widest">{t('dashboard.overview.expiry.title')}</h5>
               <Clock size={16} className="text-coral" />
             </div>
             <div className="space-y-6">
@@ -310,7 +314,7 @@ const OverviewPage = () => {
                 </div>
               ))}
               <button className="w-full h-9 border border-white/10 rounded-lg text-[11px] font-bold text-white/60 hover:text-white hover:bg-white/5 transition-all flex items-center justify-center gap-2 group">
-                Redistribute <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                {t('dashboard.overview.expiry.redistribute')} <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
           </div>

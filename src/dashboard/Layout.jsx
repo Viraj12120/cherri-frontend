@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Outlet, NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   Home, Box, Cpu, LineChart, RefreshCw,
   ClipboardList, AlertTriangle, Settings, Sparkles,
@@ -12,24 +13,24 @@ import { useAuthStore } from '../stores/authStore';
 
 import NLQueryTerminal from './NLQueryTerminal';
 import MobileRestriction from './components/MobileRestriction';
-
-const menuItems = [
-  { icon: Home, label: 'Overview', path: PATHS.dashboard, end: true },
-  { icon: Box, label: 'Inventory', path: PATHS.inventory },
-
-  { icon: ClipboardList, label: 'Orders', path: PATHS.orders },
-  { icon: AlertTriangle, label: 'Alerts', path: PATHS.alerts, badge: 12, badgeColor: 'bg-danger/20 text-danger' },
-  { icon: Sparkles, label: 'AI Agents', path: PATHS.agents },
-  { icon: CreditCard, label: 'Billing', path: PATHS.billing },
-  { icon: Settings, label: 'Settings', path: `${PATHS.dashboard}/settings` },
-  { icon: LineChart, label: 'Forecasting', path: null, disabled: true },
-  { icon: RefreshCw, label: 'Redistribution', path: `${PATHS.dashboard}/redistributions`, disabled: true },
-];
-
 const DashboardLayout = () => {
+  const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { tenantId } = useParams();
+
+  const menuItems = [
+    { icon: Home, label: t('dashboard.sidebar.overview'), path: PATHS.dashboard(tenantId), end: true },
+    { icon: Box, label: t('dashboard.sidebar.inventory'), path: PATHS.inventory(tenantId) },
+    { icon: ClipboardList, label: t('dashboard.sidebar.orders'), path: PATHS.orders(tenantId) },
+    { icon: AlertTriangle, label: t('dashboard.sidebar.alerts'), path: PATHS.alerts(tenantId), badge: 12, badgeColor: 'bg-danger/20 text-danger' },
+    { icon: Sparkles, label: t('dashboard.sidebar.agents'), path: PATHS.agents(tenantId) },
+    { icon: CreditCard, label: t('dashboard.sidebar.billing'), path: PATHS.billing(tenantId) },
+    { icon: Settings, label: t('dashboard.sidebar.settings'), path: PATHS.settings(tenantId) },
+    { icon: LineChart, label: t('dashboard.sidebar.forecasting'), path: null, disabled: true },
+    { icon: RefreshCw, label: t('dashboard.sidebar.redistribution'), path: PATHS.redistributions(tenantId), disabled: true },
+  ];
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
 
@@ -76,7 +77,7 @@ const DashboardLayout = () => {
                     <span className="text-sm font-medium lg:inline hidden">
                       {item.label}
                       <sup className="text-[8px] font-bold text-acid/90 uppercase tracking-widest animate-pulse ml-1">
-                        soon
+                        {t('dashboard.sidebar.soon')}
                       </sup>
                     </span>
                   )}
@@ -144,10 +145,10 @@ const DashboardLayout = () => {
           <button
             onClick={handleLogout}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/40 hover:bg-danger/10 hover:text-danger transition-all ${isCollapsed ? 'justify-center' : ''}`}
-            title="Logout"
+            title={t('dashboard.sidebar.logout')}
           >
             <LogOut size={20} />
-            {!isCollapsed && <span className="text-sm font-medium lg:inline hidden">Logout</span>}
+            {!isCollapsed && <span className="text-sm font-medium lg:inline hidden">{t('dashboard.sidebar.logout')}</span>}
           </button>
         </div>
       </aside>
@@ -161,7 +162,7 @@ const DashboardLayout = () => {
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder={t('dashboard.topbar.search_placeholder')}
                 className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-xs focus:outline-none focus:border-acid/30 transition-all"
               />
             </div>
@@ -169,7 +170,7 @@ const DashboardLayout = () => {
 
           <div className="flex items-center gap-4 md:gap-6">
             <NavLink
-              to={PATHS.alerts}
+              to={PATHS.alerts(tenantId)}
               className="relative text-white/50 hover:text-white transition-colors"
             >
               <Bell size={20} />
@@ -178,7 +179,7 @@ const DashboardLayout = () => {
             <div className="h-6 w-px bg-white/10"></div>
             <button className="text-sm font-bold text-acid flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-acid animate-pulse"></div>
-              <span className="hidden md:inline">Agent Live</span>
+              <span className="hidden md:inline">{t('dashboard.topbar.agent_live')}</span>
             </button>
 
             {/* User Profile - Global Topbar */}

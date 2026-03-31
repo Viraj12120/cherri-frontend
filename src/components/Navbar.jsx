@@ -72,7 +72,8 @@ const Navbar = ({ currentView = 'landing', isMenuOpen, setIsMenuOpen }) => {
 
   const handleLiveDashboard = () => {
     devLogin();
-    navigate(PATHS.dashboard);
+    const mockUser = useAuthStore.getState().user;
+    navigate(PATHS.dashboard(mockUser?.tenant_id || 'dev-tenant-id'));
   };
 
   return (

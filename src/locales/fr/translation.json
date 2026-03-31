@@ -1,4 +1,10 @@
 {
+  "common": {
+    "auth_required": "Authentification requise",
+    "guest_mode_desc": "Vous êtes actuellement en mode invité. Veuillez vous connecter à votre compte pour voir et gérer votre profil et les paramètres de votre organisation.",
+    "sign_in_to_cherriplus": "Se connecter à CherriPlus",
+    "error_load_data": "Échec du chargement des données. Veuillez réessayer."
+  },
   "navbar": {
     "home": "Accueil",
     "features": "Fonctionnalités",
@@ -283,6 +289,131 @@
     "hospital_placeholder": "Ex. MedNet",
     "create_password_placeholder": "Créer un mot de passe",
     "create_account_button": "Créer le compte",
-    "terms_privacy": "En vous inscrivant, vous acceptez nos Conditions et notre Politique de confidentialité."
+    "terms_privacy": "En vous inscrivant, vous acceptez nos conditions d'utilisation et notre politique de confidentialité."
+  },
+  "dashboard": {
+    "sidebar": {
+      "overview": "Aperçu",
+      "inventory": "Inventaire",
+      "orders": "Commandes",
+      "alerts": "Alertes",
+      "agents": "Agents IA",
+      "billing": "Facturation",
+      "settings": "Paramètres",
+      "forecasting": "Prévisions",
+      "redistribution": "Redistribution",
+      "soon": "bientôt",
+      "logout": "Déconnexion"
+    },
+    "topbar": {
+      "search_placeholder": "Rechercher...",
+      "agent_live": "Agent en direct"
+    },
+    "overview": {
+      "greeting": "Bonjour, {{name}}.",
+      "subtitle": "Aperçu en direct de la santé des stocks de votre magasin.",
+      "export_report": "Exporter le rapport",
+      "manual_order": "Commande manuelle",
+      "critical_alert": "{{count}} ARTICLES CRITIQUES NÉCESSITENT UNE ACTION",
+      "view_all": "Voir tout →",
+      "stats": {
+        "total_stock": "STOCK TOTAL",
+        "total_sub": "Inventaire actif",
+        "critical": "CRITIQUE",
+        "critical_sub": "Action immédiate nécessaire",
+        "low_stock": "STOCK FAIBLE",
+        "low_sub": "Commander bientôt",
+        "expiring": "EXPIRANT",
+        "expiring_sub": "Sous 30 jours"
+      },
+      "table": {
+        "title": "Aperçu de la santé des stocks",
+        "items_count": "{{count}} articles",
+        "drug_name": "Nom du médicament",
+        "category": "Catégorie",
+        "stock": "Stock",
+        "min": "Min",
+        "status": "Statut",
+        "action": "Action",
+        "reorder": "Commander à nouveau"
+      },
+      "suggestion": {
+        "badge": "Suggestion de Cherri",
+        "time": "À l'instant",
+        "title": "Réapprovisionner Metformine 500mg",
+        "desc": "Recommandé : <0>{{qty}} unités</0>. Le stock actuel couvre 3 jours. Une hausse de la demande (+{{spike}}%) est attendue la semaine prochaine.",
+        "confidence": "Confiance",
+        "approve": "Approuver",
+        "edit": "Modifier la suggestion",
+        "reject": "Rejeter",
+        "approved_title": "Commande approuvée",
+        "approved_desc": "{{qty}} unités de Metformine 500mg de {{supplier}}. Bon de commande en file d'attente pour traitement.",
+        "next_suggestion": "Voir la suggestion suivante →",
+        "suggestion_dismissed": "Suggestion rejetée.",
+        "restore": "Restaurer la suggestion"
+      },
+      "expiry": {
+        "title": "Alertas d'expiration",
+        "redistribute": "Redistribuer"
+      }
+    },
+    "inventory": {
+      "title": "Inventaire",
+      "subtitle": "Tous les médicaments, numéros de lot, dates de péremption et niveaux de stock.",
+      "export_csv": "Exporter CSV",
+      "add_item": "Ajouter un article",
+      "filters": {
+        "all": "Tout",
+        "critical": "CRITIQUE",
+        "low": "FAIBLE",
+        "ok": "OK"
+      },
+      "search_placeholder": "Rechercher SKU ou nom...",
+      "table": {
+        "medicine": "Médicament",
+        "sku": "SKU",
+        "category": "Catégorie",
+        "qty": "Qté",
+        "min": "Min",
+        "cost": "Coût/Unité",
+        "status": "Statut",
+        "actions": "Actions",
+        "no_items": "Aucun article d'inventaire trouvé.",
+        "clear_filters": "Effacer les filtres"
+      }
+    },
+    "settings": {
+      "title": "Compte et Paramètres",
+      "subtitle": "Gérez votre profil, votre organisation et vos préférences.",
+      "tabs": {
+        "profile": "Profil",
+        "organization": "Organisation"
+      },
+      "profile": {
+        "title": "Informations du profil",
+        "subtitle": "Mettez à jour vos informations personnelles et la façon dont les autres vous voient.",
+        "first_name": "Prénom",
+        "last_name": "Nom",
+        "email_address": "Adresse e-mail",
+        "email_locked": "L'e-mail ne peut pas être modifié manuellement.",
+        "language_region": "Langue / Région",
+        "save_changes": "Enregistrer les modifications",
+        "saving": "Enregistrement..."
+      },
+      "organization": {
+        "title": "Paramètres de l'organisation",
+        "subtitle": "Gérez l'identité de votre pharmacie ou de votre espace de travail.",
+        "pharmacy_name": "Nom de la pharmacie",
+        "admin_only_edit": "Seuls les administrateurs peuvent modifier les détails de l'organisation.",
+        "update_workspace": "Mettre à jour l'espace de travail"
+      },
+      "account_status": {
+        "title": "Statut du compte",
+        "role": "Rôle",
+        "verified": "Vérifié",
+        "identity_confirmed": "Oui, identité confirmée",
+        "sign_out": "Déconnexion"
+      }
+    }
   }
 }

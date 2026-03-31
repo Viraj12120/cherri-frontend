@@ -1,4 +1,10 @@
 {
+  "common": {
+    "auth_required": "Autenticación requerida",
+    "guest_mode_desc": "Actualmente se encuentra en modo invitado. Inicie sesión en su cuenta para ver y administrar su perfil y la configuración de su organización.",
+    "sign_in_to_cherriplus": "Iniciar sesión en CherriPlus",
+    "error_load_data": "Error al cargar los datos. Por favor, inténtelo de nuevo."
+  },
   "navbar": {
     "home": "Inicio",
     "features": "Características",
@@ -284,5 +290,130 @@
     "create_password_placeholder": "Crear una contraseña",
     "create_account_button": "Crear Cuenta",
     "terms_privacy": "Al registrarte, aceptas nuestros Términos y Política de privacidad."
+  },
+  "dashboard": {
+    "sidebar": {
+      "overview": "Resumen",
+      "inventory": "Inventario",
+      "orders": "Pedidos",
+      "alerts": "Alertas",
+      "agents": "Agentes IA",
+      "billing": "Facturación",
+      "settings": "Ajustes",
+      "forecasting": "Previsión",
+      "redistribution": "Redistribución",
+      "soon": "pronto",
+      "logout": "Cerrar sesión"
+    },
+    "topbar": {
+      "search_placeholder": "Buscar...",
+      "agent_live": "Agente en vivo"
+    },
+    "overview": {
+      "greeting": "Buenos días, {{name}}.",
+      "subtitle": "Resumen en vivo de la salud del inventario de su tienda.",
+      "export_report": "Exportar informe",
+      "manual_order": "Pedido manual",
+      "critical_alert": "{{count}} ARTÍCULOS CRÍTICOS REQUIEREN ACCIÓN",
+      "view_all": "Ver todo →",
+      "stats": {
+        "total_stock": "STOCK TOTAL",
+        "total_sub": "Inventario activo",
+        "critical": "CRÍTICO",
+        "critical_sub": "Acción inmediata necesaria",
+        "low_stock": "STOCK BAJO",
+        "low_sub": "Pedir pronto",
+        "expiring": "CADUCANDO",
+        "expiring_sub": "En 30 días"
+      },
+      "table": {
+        "title": "Vista previa de salud de stock",
+        "items_count": "{{count}} artículos",
+        "drug_name": "Nombre del medicamento",
+        "category": "Categoría",
+        "stock": "Stock",
+        "min": "Mín",
+        "status": "Estado",
+        "action": "Acción",
+        "reorder": "Pedir de nuevo"
+      },
+      "suggestion": {
+        "badge": "Sugerencia de Cherri",
+        "time": "Ahora mismo",
+        "title": "Reabastecer Metformina 500mg",
+        "desc": "Recomendado: <0>{{qty}} unidades</0>. El stock actual cubre 3 días. Se espera un pico de demanda (+{{spike}}%) la próxima semana.",
+        "confidence": "Confianza",
+        "approve": "Aprobar",
+        "edit": "Editar sugerencia",
+        "reject": "Rechazar",
+        "approved_title": "Pedido aprobado",
+        "approved_desc": "{{qty}} unidades de Metformina 500mg de {{supplier}}. Orden de compra en cola para procesamiento.",
+        "next_suggestion": "Ver siguiente sugerencia →",
+        "suggestion_dismissed": "Sugerencia descartada.",
+        "restore": "Restaurar sugerencia"
+      },
+      "expiry": {
+        "title": "Alertas de caducidad",
+        "redistribute": "Redistribuir"
+      }
+    },
+    "inventory": {
+      "title": "Inventario",
+      "subtitle": "Todos los medicamentos, números de lote, fechas de caducidad y niveles de stock.",
+      "export_csv": "Exportar CSV",
+      "add_item": "Añadir artículo",
+      "filters": {
+        "all": "Todo",
+        "critical": "CRÍTICO",
+        "low": "BAJO",
+        "ok": "OK"
+      },
+      "search_placeholder": "Buscar SKU o nombre...",
+      "table": {
+        "medicine": "Medicamento",
+        "sku": "SKU",
+        "category": "Categoría",
+        "qty": "Cant.",
+        "min": "Mín.",
+        "cost": "Costo/Unidad",
+        "status": "Estado",
+        "actions": "Acciones",
+        "no_items": "No se encontraron artículos de inventario.",
+        "clear_filters": "Limpiar filtros"
+      }
+    },
+    "settings": {
+      "title": "Cuenta y Ajustes",
+      "subtitle": "Gestiona tu perfil, organización y preferencias.",
+      "tabs": {
+        "profile": "Perfil",
+        "organization": "Organización"
+      },
+      "profile": {
+        "title": "Información del Perfil",
+        "subtitle": "Actualiza tus datos personales y cómo te ven los demás.",
+        "first_name": "Nombre",
+        "last_name": "Apellido",
+        "email_address": "Correo electrónico",
+        "email_locked": "El correo electrónico no se puede cambiar manualmente.",
+        "language_region": "Idioma / Región",
+        "save_changes": "Guardar cambios",
+        "saving": "Guardando..."
+      },
+      "organization": {
+        "title": "Ajustes de la Organización",
+        "subtitle": "Gestiona la identidad de tu farmacia o espacio de trabajo.",
+        "pharmacy_name": "Nombre de la farmacia",
+        "admin_only_edit": "Solo los administradores pueden editar los detalles de la organización.",
+        "update_workspace": "Actualizar espacio de trabajo"
+      },
+      "account_status": {
+        "title": "Estado de la cuenta",
+        "role": "Rol",
+        "verified": "Verificado",
+        "identity_confirmed": "Sí, identidad confirmada",
+        "sign_out": "Cerrar sesión"
+      }
+    }
   }
 }

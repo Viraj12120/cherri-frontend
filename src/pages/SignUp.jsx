@@ -64,7 +64,8 @@ const SignUp = () => {
     });
 
     if (success) {
-      navigate(PATHS.dashboard, { replace: true });
+      const user = useAuthStore.getState().user;
+      navigate(PATHS.dashboard(user?.tenant_id || 'unassigned'), { replace: true });
     }
   };
 

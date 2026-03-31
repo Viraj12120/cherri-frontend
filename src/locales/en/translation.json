@@ -1,4 +1,10 @@
 {
+  "common": {
+    "auth_required": "Authentication Required",
+    "guest_mode_desc": "You are currently in guest mode. Please log in to your account to view and manage your profile and organization settings.",
+    "sign_in_to_cherriplus": "Sign In to CherriPlus",
+    "error_load_data": "Failed to load data. Please try again."
+  },
   "navbar": {
     "home": "Home",
     "features": "Features",
@@ -284,5 +290,130 @@
     "create_password_placeholder": "Create a password",
     "create_account_button": "Create Account",
     "terms_privacy": "By signing up, you agree to our Terms and Privacy Policy."
+  },
+  "dashboard": {
+    "sidebar": {
+      "overview": "Overview",
+      "inventory": "Inventory",
+      "orders": "Orders",
+      "alerts": "Alerts",
+      "agents": "AI Agents",
+      "billing": "Billing",
+      "settings": "Settings",
+      "forecasting": "Forecasting",
+      "redistribution": "Redistribution",
+      "soon": "soon",
+      "logout": "Logout"
+    },
+    "topbar": {
+      "search_placeholder": "Search...",
+      "agent_live": "Agent Live"
+    },
+    "overview": {
+      "greeting": "Good morning, {{name}}.",
+      "subtitle": "Live overview of your store's inventory health.",
+      "export_report": "Export Report",
+      "manual_order": "Manual Order",
+      "critical_alert": "{{count}} CRITICAL ITEMS REQUIRE ACTION",
+      "view_all": "View All →",
+      "stats": {
+        "total_stock": "TOTAL STOCK",
+        "total_sub": "Active inventory",
+        "critical": "CRITICAL",
+        "critical_sub": "Immediate action needed",
+        "low_stock": "LOW STOCK",
+        "low_sub": "Order soon",
+        "expiring": "EXPIRING",
+        "expiring_sub": "Within 30 days"
+      },
+      "table": {
+        "title": "Stock Health Preview",
+        "items_count": "{{count}} items",
+        "drug_name": "Drug Name",
+        "category": "Category",
+        "stock": "Stock",
+        "min": "Min",
+        "status": "Status",
+        "action": "Action",
+        "reorder": "Reorder"
+      },
+      "suggestion": {
+        "badge": "Cherri's Suggestion",
+        "time": "Just now",
+        "title": "Reorder Metformin 500mg",
+        "desc": "Recommended: <0>{{qty}} units</0>. Current stock covers 3 days. Demand spike (+{{spike}}%) expected next week.",
+        "confidence": "Confidence",
+        "approve": "Approve",
+        "edit": "Edit suggestion",
+        "reject": "Reject",
+        "approved_title": "Order Approved",
+        "approved_desc": "{{qty}} units of Metformin 500mg from {{supplier}}. PO queued for processing.",
+        "next_suggestion": "View next suggestion →",
+        "suggestion_dismissed": "Suggestion dismissed.",
+        "restore": "Restore suggestion"
+      },
+      "expiry": {
+        "title": "Expiry Alerts",
+        "redistribute": "Redistribute"
+      }
+    },
+    "inventory": {
+      "title": "Inventory",
+      "subtitle": "All medications, batch numbers, expiry dates and stock levels.",
+      "export_csv": "Export CSV",
+      "add_item": "Add Item",
+      "filters": {
+        "all": "All",
+        "critical": "CRITICAL",
+        "low": "LOW",
+        "ok": "OK"
+      },
+      "search_placeholder": "Search SKU or name...",
+      "table": {
+        "medicine": "Medicine",
+        "sku": "SKU",
+        "category": "Category",
+        "qty": "Qty",
+        "min": "Min",
+        "cost": "Cost/Unit",
+        "status": "Status",
+        "actions": "Actions",
+        "no_items": "No inventory items found.",
+        "clear_filters": "Clear Filters"
+      }
+    },
+    "settings": {
+      "title": "Account & Settings",
+      "subtitle": "Manage your profile, organization, and preferences.",
+      "tabs": {
+        "profile": "Profile",
+        "organization": "Organization"
+      },
+      "profile": {
+        "title": "Profile Information",
+        "subtitle": "Update your personal details and how others see you.",
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "email_address": "Email Address",
+        "email_locked": "Email cannot be changed manually.",
+        "language_region": "Language / Region",
+        "save_changes": "Save Changes",
+        "saving": "Saving..."
+      },
+      "organization": {
+        "title": "Organization Settings",
+        "subtitle": "Manage your pharmacy or workspace identity.",
+        "pharmacy_name": "Pharmacy Name",
+        "admin_only_edit": "Only Administrators can edit organization details.",
+        "update_workspace": "Update Workspace"
+      },
+      "account_status": {
+        "title": "Account Status",
+        "role": "Role",
+        "verified": "Verified",
+        "identity_confirmed": "Yes, identity confirmed",
+        "sign_out": "Sign Out"
+      }
+    }
   }
 }

@@ -10,7 +10,7 @@ const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get('redirect') || PATHS.dashboard;
+  const redirectTo = searchParams.get('redirect');
 
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [email, setEmail] = useState('');
@@ -26,7 +26,8 @@ const Login = () => {
 
     const success = await login(email, password);
     if (success) {
-      navigate(redirectTo, { replace: true });
+      const user = useAuthStore.getState().user;
+      navigate(redirectTo || PATHS.dashboard(user?.tenant_id || 'unassigned'), { replace: true });
     }
   };
 
@@ -72,7 +73,7 @@ const Login = () => {
             <div className="w-full flex flex-col gap-3">
               {/* Google SSO Button */}
               <button 
-                onClick={() => navigate(PATHS.dashboard)}
+                onClick={() => navigate(PATHS.dashboard(useAuthStore.getState().user?.tenant_id || 'demo-tenant'))}
                 className="w-full bg-[#202022] hover:bg-[#2a2a2c] border border-white/5 rounded-[8px] p-2 flex items-center justify-between transition-colors shadow-sm"
               >
                 <div className="flex items-center gap-3">

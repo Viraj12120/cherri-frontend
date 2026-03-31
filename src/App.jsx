@@ -112,6 +112,15 @@ const LandingPage = () => {
   );
 };
 
+// ─── Dashboard Root Redirect ─────────────────────────────────────────────────
+const DashboardRootRedirect = () => {
+  const user = useAuthStore((s) => s.user);
+  if (user?.tenant_id) {
+    return <Navigate to={PATHS.dashboard(user.tenant_id)} replace />;
+  }
+  return <Navigate to={PATHS.login} replace />;
+};
+
 // ─── App with Router ─────────────────────────────────────────────────────────
 function App() {
   const location = useLocation();
@@ -148,8 +157,10 @@ function App() {
         <Route path={PATHS.acceptInvite} element={<AcceptInvitePage />} />
 
         {/* ── Protected Dashboard Routes ────────────────────────────────── */}
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardRootRedirect /></ProtectedRoute>} />
+
         <Route
-          path={PATHS.dashboard}
+          path={PATHS.dashboardBase}
           element={
             <ProtectedRoute>
               <DashboardLayout />

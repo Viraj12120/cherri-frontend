@@ -11,22 +11,27 @@ export const PATHS = {
   acceptInvite: '/accept-invite',
   pricing: '/pricing',
 
-  // Dashboard
-  dashboard: '/dashboard',
-  inventory: '/dashboard/inventory',
-  medicines: '/dashboard/medicines',
-  orders: '/dashboard/orders',
-  orderDetail: (id) => `/dashboard/orders/${id}`,
-  suppliers: '/dashboard/suppliers',
-  alerts: '/dashboard/alerts',
-  agents: '/dashboard/agents',
-  agentDetail: (id) => `/dashboard/agents/${id}`,
-  aiQuery: '/dashboard/ai-query',
-  redistributions: '/dashboard/redistributions',
-  billing: '/dashboard/billing',
-  settings: '/dashboard/settings',
-  users: '/dashboard/users',
-  auditLog: '/dashboard/audit-log',
+  // React Router Base Definitions
+  dashboardBase: '/dashboard/:tenantId',
+
+  // Dashboard Dynamic URL Generators
+  dashboard: (t) => `/dashboard/${t}`,
+  inventory: (t) => `/dashboard/${t}/inventory`,
+  medicines: (t) => `/dashboard/${t}/medicines`,
+  medicineDetail: (t, id) => `/dashboard/${t}/medicines/${id}`,
+  orders: (t) => `/dashboard/${t}/orders`,
+  orderDetail: (t, id) => `/dashboard/${t}/orders/${id}`,
+  suppliers: (t) => `/dashboard/${t}/suppliers`,
+  alerts: (t) => `/dashboard/${t}/alerts`,
+  alertDetail: (t, id) => `/dashboard/${t}/alerts/${id}`,
+  agents: (t) => `/dashboard/${t}/agents`,
+  agentDetail: (t, id) => `/dashboard/${t}/agents/${id}`,
+  aiQuery: (t) => `/dashboard/${t}/ai-query`,
+  redistributions: (t) => `/dashboard/${t}/redistributions`,
+  billing: (t) => `/dashboard/${t}/billing`,
+  settings: (t) => `/dashboard/${t}/settings`,
+  users: (t) => `/dashboard/${t}/users`,
+  auditLog: (t) => `/dashboard/${t}/audit-log`,
 
   notFound: '/404',
 };

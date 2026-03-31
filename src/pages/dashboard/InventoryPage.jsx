@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Package, Search, AlertCircle, Clock, TrendingDown, Plus, Download, Eye, Edit, Trash2 } from 'lucide-react';
 import api from '../../lib/axios';
 import { useUiStore } from '../../stores/uiStore';
@@ -6,6 +7,7 @@ import Skeleton, { TableRowSkeleton } from '../../components/ui/Skeleton';
 import StatusBadge from '../../components/ui/StatusBadge';
 
 const InventoryPage = () => {
+  const { t } = useTranslation();
   const addToast = useUiStore((s) => s.addToast);
 
   const [items, setItems] = useState([]);
@@ -67,7 +69,7 @@ const InventoryPage = () => {
     } catch (err) {
       addToast({
         type: 'error',
-        message: 'Failed to load inventory data.',
+        message: t('common.error_load_data') || 'Failed to load inventory data.',
       });
     } finally {
       setIsLoading(false);
@@ -89,15 +91,15 @@ const InventoryPage = () => {
     <div className="space-y-8 max-w-[1400px] mx-auto pb-20">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">Inventory</h1>
-          <p className="text-white/40 text-sm">All medications, batch numbers, expiry dates and stock levels.</p>
+          <h1 className="text-2xl font-bold text-white mb-1">{t('dashboard.inventory.title')}</h1>
+          <p className="text-white/40 text-sm">{t('dashboard.inventory.subtitle')}</p>
         </div>
         <div className="flex gap-3">
           <button className="bg-white/5 border border-white/10 text-xs font-bold px-4 py-2 rounded-lg hover:bg-white/10 transition-all flex items-center gap-2">
-            <Download size={14} /> Export CSV
+            <Download size={14} /> {t('dashboard.inventory.export_csv')}
           </button>
           <button className="bg-acid text-void text-xs font-bold px-4 py-2 rounded-lg hover:brightness-110 transition-all flex items-center gap-2">
-            <Plus size={14} /> Add Item
+            <Plus size={14} /> {t('dashboard.inventory.add_item')}
           </button>
         </div>
       </div>
@@ -105,10 +107,10 @@ const InventoryPage = () => {
       {/* Stats Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Total SKUs', val: isLoading ? <Skeleton w="40px" h="28px" /> : stats.total, icon: Package, color: 'text-acid' },
-          { label: 'Critical', val: isLoading ? <Skeleton w="40px" h="28px" /> : stats.critical, icon: AlertCircle, color: 'text-danger' },
-          { label: 'Low Stock', val: isLoading ? <Skeleton w="40px" h="28px" /> : stats.low, icon: TrendingDown, color: 'text-warn' },
-          { label: 'Expiring Soon', val: isLoading ? <Skeleton w="40px" h="28px" /> : stats.expiringSoon, icon: Clock, color: 'text-coral' },
+          { label: t('dashboard.overview.stats.total_stock'), val: isLoading ? <Skeleton w="40px" h="28px" /> : stats.total, icon: Package, color: 'text-acid' },
+          { label: t('dashboard.overview.stats.critical'), val: isLoading ? <Skeleton w="40px" h="28px" /> : stats.critical, icon: AlertCircle, color: 'text-danger' },
+          { label: t('dashboard.overview.stats.low_stock'), val: isLoading ? <Skeleton w="40px" h="28px" /> : stats.low, icon: TrendingDown, color: 'text-warn' },
+          { label: t('dashboard.overview.stats.expiring'), val: isLoading ? <Skeleton w="40px" h="28px" /> : stats.expiringSoon, icon: Clock, color: 'text-coral' },
         ].map((s, i) => (
           <div key={i} className="bg-[#161618] border border-white/5 p-4 rounded-xl flex items-center gap-3">
             <div className={`p-2 rounded-lg bg-white/5 ${s.color}`}><s.icon size={18} /></div>
@@ -124,19 +126,24 @@ const InventoryPage = () => {
       <div className="bg-[#161618] border border-white/5 rounded-xl overflow-hidden">
         <div className="p-4 border-b border-white/5 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
           <div className="flex gap-2 relative z-10">
-            {['All', 'CRITICAL', 'LOW', 'OK'].map(f => (
+            {[
+              { id: 'All', label: t('dashboard.inventory.filters.all') },
+              { id: 'CRITICAL', label: t('dashboard.inventory.filters.critical') },
+              { id: 'LOW', label: t('dashboard.inventory.filters.low') },
+              { id: 'OK', label: t('dashboard.inventory.filters.ok') }
+            ].map(f => (
               <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all ${filter === f
-                  ? f === 'CRITICAL' ? 'bg-danger/20 text-danger border border-danger/30'
-                    : f === 'LOW' ? 'bg-warn/20 text-warn border border-warn/30'
-                      : f === 'OK' ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/30'
+                key={f.id}
+                onClick={() => setFilter(f.id)}
+                className={`text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all ${filter === f.id
+                  ? f.id === 'CRITICAL' ? 'bg-danger/20 text-danger border border-danger/30'
+                    : f.id === 'LOW' ? 'bg-warn/20 text-warn border border-warn/30'
+                      : f.id === 'OK' ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/30'
                         : 'bg-acid/20 text-acid border border-acid/30'
                   : 'bg-white/5 text-white/40 hover:text-white border border-transparent'
                   }`}
               >
-                {f}
+                {f.label}
               </button>
             ))}
           </div>
@@ -144,7 +151,7 @@ const InventoryPage = () => {
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
             <input
               type="text"
-              placeholder="Search SKU or name..."
+              placeholder={t('dashboard.inventory.search_placeholder')}
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-9 pr-4 text-xs focus:outline-none focus:border-acid/30 transition-all text-white placeholder-white/30"
@@ -156,14 +163,14 @@ const InventoryPage = () => {
           <table className="w-full text-left text-xs min-w-[800px]">
             <thead className="text-white/30 uppercase tracking-wider border-b border-white/5 bg-[#1a1a1c]">
               <tr>
-                <th className="px-6 py-4 font-medium ">Medicine</th>
-                <th className="px-6 py-4 font-medium border-l border-white/5">SKU</th>
-                <th className="px-6 py-4 font-medium border-l border-white/5">Category</th>
-                <th className="px-6 py-4 font-medium border-l border-white/5 ">Qty</th>
-                <th className="px-6 py-4 font-medium  border-l border-white/5">Min</th>
-                <th className="px-6 py-4 font-medium border-l border-white/5 ">Cost/Unit</th>
-                <th className="px-6 py-4 font-medium border-l border-white/5">Status</th>
-                <th className="px-6 py-4 font-medium border-l border-white/5 text-right min-w-[100px]">Actions</th>
+                <th className="px-6 py-4 font-medium ">{t('dashboard.inventory.table.medicine')}</th>
+                <th className="px-6 py-4 font-medium border-l border-white/5">{t('dashboard.inventory.table.sku')}</th>
+                <th className="px-6 py-4 font-medium border-l border-white/5">{t('dashboard.inventory.table.category')}</th>
+                <th className="px-6 py-4 font-medium border-l border-white/5 ">{t('dashboard.inventory.table.qty')}</th>
+                <th className="px-6 py-4 font-medium  border-l border-white/5">{t('dashboard.inventory.table.min')}</th>
+                <th className="px-6 py-4 font-medium border-l border-white/5 ">{t('dashboard.inventory.table.cost')}</th>
+                <th className="px-6 py-4 font-medium border-l border-white/5">{t('dashboard.inventory.table.status')}</th>
+                <th className="px-6 py-4 font-medium border-l border-white/5 text-right min-w-[100px]">{t('dashboard.inventory.table.actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -211,9 +218,9 @@ const InventoryPage = () => {
                   <td colSpan={8} className="text-center py-16 text-white/30">
                     <div className="flex flex-col items-center justify-center gap-3">
                       <Package size={32} className="opacity-20" />
-                      <p>No inventory items found.</p>
+                      <p>{t('dashboard.inventory.table.no_items')}</p>
                       {filter !== 'All' || search ? (
-                        <button onClick={() => { setFilter('All'); setSearch(''); }} className="text-acid hover:underline mt-2">Clear Filters</button>
+                        <button onClick={() => { setFilter('All'); setSearch(''); }} className="text-acid hover:underline mt-2">{t('dashboard.inventory.table.clear_filters')}</button>
                       ) : null}
                     </div>
                   </td>
