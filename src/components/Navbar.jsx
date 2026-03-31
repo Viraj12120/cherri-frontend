@@ -78,7 +78,7 @@ const Navbar = ({ currentView = 'landing', isMenuOpen, setIsMenuOpen }) => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full h-14 z-50 flex items-center justify-between px-6 md:px-12 lg:px-20 transition-all duration-300 ${isScrolled
+      className={`fixed top-0 left-0 w-full h-14 z-50 flex items-center justify-between px-6 md:px-12  transition-all duration-300 ${isScrolled
         ? 'bg-void/90 backdrop-blur-xl border-b border-white/10'
         : 'bg-transparent'
         }`}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Package, Search, AlertCircle, Clock, TrendingDown, Plus, Download, Eye, Edit, Trash2 } from 'lucide-react';
+import { Package, Search, AlertCircle, Clock, TrendingDown, Plus, Download, Eye, Edit, Trash2, Upload } from 'lucide-react';
+import BulkImportModal from '../../components/dashboard/BulkImportModal';
 import api from '../../lib/axios';
 import { useUiStore } from '../../stores/uiStore';
 import Skeleton, { TableRowSkeleton } from '../../components/ui/Skeleton';
@@ -14,6 +15,7 @@ const InventoryPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const [stats, setStats] = useState({
     total: 0,
@@ -95,14 +97,27 @@ const InventoryPage = () => {
           <p className="text-white/40 text-sm">{t('dashboard.inventory.subtitle')}</p>
         </div>
         <div className="flex gap-3">
-          <button className="bg-white/5 border border-white/10 text-xs font-bold px-4 py-2 rounded-lg hover:bg-white/10 transition-all flex items-center gap-2">
-            <Download size={14} /> {t('dashboard.inventory.export_csv')}
+          <button
+            onClick={() => setIsImportModalOpen(true)}
+            className="bg-white/5 border border-white/10 text-xs font-bold px-4 py-2 rounded-lg hover:bg-white/10 transition-all flex items-center gap-2"
+          >
+            <Upload size={14} /> {t('dashboard.inventory.import')}
           </button>
+
           <button className="bg-acid text-void text-xs font-bold px-4 py-2 rounded-lg hover:brightness-110 transition-all flex items-center gap-2">
             <Plus size={14} /> {t('dashboard.inventory.add_item')}
           </button>
         </div>
       </div>
+
+      <BulkImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onSuccess={() => {
+          fetchInventory();
+          setIsImportModalOpen(false);
+        }}
+      />
 
       {/* Stats Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

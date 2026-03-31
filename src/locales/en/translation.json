@@ -361,6 +361,7 @@
       "title": "Inventory",
       "subtitle": "All medications, batch numbers, expiry dates and stock levels.",
       "export_csv": "Export CSV",
+      "import": "Bulk Import",
       "add_item": "Add Item",
       "filters": {
         "all": "All",
