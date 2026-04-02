@@ -84,7 +84,7 @@ const Navbar = ({ currentView = 'landing', isMenuOpen, setIsMenuOpen }) => {
         }`}
     >
       <Link to={PATHS.home} className="flex items-center gap-2 nav-logo cursor-pointer">
-        <span className="font-bold text-lg text-white tracking-tight">Cherriplus</span>
+        <span className="font-bold text-lg text-white tracking-tight">Cherri+</span>
       </Link>
 
       <ul className="hidden md:flex items-center gap-8 nav-links">
