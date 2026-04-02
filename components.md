@@ -6,7 +6,7 @@
 export const NAV = {
   logo: {
     dot: "●",                  // --color-acid
-    name: "PharmaAgent",
+    name: "Cherri+",
   },
   links: [
     { label: "Home",     href: "/" },
@@ -37,7 +37,7 @@ export const HERO = {
   },
 
   subheadline:
-    "PharmaAgent gives your supply chain a single platform. " +
+    "Cherri+ gives your supply chain a single platform. " +
     "AI-powered demand forecasting with a fully autonomous " +
     "multi-agent replenishment system.",
 
@@ -71,7 +71,7 @@ export const FEATURE_INTRO = {
   eyebrow: "850+ SKUs MONITORED LIVE",
 
   headline: {
-    line1: "PharmaAgent Gives You",
+    line1: "Cherri+ Gives You",
     line2: "Full Supply Chain Visibility",
   },
 
@@ -102,7 +102,7 @@ export const FEATURE_INTRO = {
   ],
 
   phoneMockup: {
-    appName: "● PharmaAgent",
+    appName: "● Cherri+",
     searchPlaceholder: "Search drug...",
     filterLabel: "Category ▾",
     stockItems: [
@@ -132,7 +132,7 @@ export const FEATURE_GRID = {
   eyebrow: "AI AGENTS IN ACTION",
 
   headline: {
-    line1: "PharmaAgent Helps You Prevent",
+    line1: "Cherri+ Helps You Prevent",
     line2: "Every Supply Chain Failure",
   },
 
@@ -200,7 +200,7 @@ export const FEATURE_GRID = {
     {
       id: "E",
       size: "narrow",
-      title: "Chat with PharmaAgent AI",
+      title: "Chat with Cherri+ AI",
       body:
         "Ask your supply chain anything. Get instant answers from your live data.",
       visual: {
@@ -278,7 +278,7 @@ export const OUTCOMES = {
   testimonials: [
     {
       quote:
-        "Using PharmaAgent is one of the best decisions we've ever made. " +
+        "Using Cherri+ is one of the best decisions we've ever made. " +
         "We've seen our annual expiry losses drop dramatically, and the " +
         "outlook just keeps getting better.",
       author: {
@@ -289,7 +289,7 @@ export const OUTCOMES = {
     },
     {
       quote:
-        "PharmaAgent is created for supply chain teams. It's the kind of " +
+        "Cherri+ is created for supply chain teams. It's the kind of " +
         "platform that just works — I don't have to make it work. " +
         "It's just perfect.",
       author: {
@@ -310,7 +310,7 @@ export const OUTCOMES = {
 export const USE_CASE = {
   // Left column: phone mockup (same component as FeatureIntro)
   phoneMockup: {
-    appName: "● PharmaAgent",
+    appName: "● Cherri+",
     searchPlaceholder: "Search anything...",
     filterLabel: "Category ▾",
     stockItems: [
@@ -337,7 +337,7 @@ export const USE_CASE = {
   },
 
   body:
-    "PharmaAgent helps you eliminate the guesswork of managing pharma products. " +
+    "Cherri+ helps you eliminate the guesswork of managing pharma products. " +
     "It's easy to get started and the AI can be extremely affordable and scalable, " +
     "with short timeframes and full credibility.",
 
@@ -362,29 +362,29 @@ export const FAQ = {
     {
       id: 1,
       question:
-        "What makes PharmaAgent different from other inventory tools?",
+        "What makes Cherri+ different from other inventory tools?",
       answer:
-        "PharmaAgent is the only platform built around autonomous AI agents — not " +
+        "Cherri+ is the only platform built around autonomous AI agents — not " +
         "just dashboards. Our Reorder, Redistribution, and Forecasting agents act " +
         "on your data in real time, reducing human effort by up to 60% while " +
         "delivering 94% demand forecast accuracy. Unlike traditional tools that " +
-        "show you what's wrong, PharmaAgent fixes it automatically.",
+        "show you what's wrong, Cherri+ fixes it automatically.",
       defaultOpen: true,
     },
     {
       id: 2,
       question: "Do you offer a free trial?",
       answer:
-        "Yes. PharmaAgent offers a 14-day free trial where you can connect your " +
+        "Yes. Cherri+ offers a 14-day free trial where you can connect your " +
         "inventory data and see real AI-driven recommendations — no credit card " +
         "required. Enterprise pilots with dedicated onboarding are also available.",
       defaultOpen: false,
     },
     {
       id: 3,
-      question: "Can I use PharmaAgent across multiple branches?",
+      question: "Can I use Cherri+ across multiple branches?",
       answer:
-        "Absolutely. PharmaAgent is built for multi-location networks. It monitors " +
+        "Absolutely. Cherri+ is built for multi-location networks. It monitors " +
         "inventory across 200+ branches simultaneously, identifies redistribution " +
         "opportunities between locations, and gives executives a unified network " +
         "view — all from a single dashboard.",
@@ -392,7 +392,7 @@ export const FAQ = {
     },
     {
       id: 4,
-      question: "Does PharmaAgent work on mobile?",
+      question: "Does Cherri+ work on mobile?",
       answer:
         "Yes. Pharmacists and field staff can access alerts, approve AI " +
         "recommendations, and check stock levels from any mobile device. The " +
@@ -404,7 +404,7 @@ export const FAQ = {
       id: 5,
       question: "How secure is my data?",
       answer:
-        "PharmaAgent is SOC 2 Type II certified and built on HIPAA-compliant " +
+        "Cherri+ is SOC 2 Type II certified and built on HIPAA-compliant " +
         "architecture. All data is encrypted in transit (TLS 1.3) and at rest " +
         "(AES-256). Role-based access control ensures each user only sees what " +
         "they need. Full audit logs are available for every AI decision.",
@@ -422,7 +422,7 @@ export const FAQ = {
 export const FINAL_CTA = {
   headline: {
     line1: "Are you interested in",
-    line2: "PharmaAgent?",
+    line2: "Cherri+?",
     // line2 renders in --color-acid
   },
 
@@ -441,7 +441,7 @@ export const FINAL_CTA = {
 export const FOOTER = {
   logo: {
     dot:  "●",             // --color-acid
-    name: "PharmaAgent",
+    name: "Cherri+",
   },
 
   topNav: [
@@ -452,10 +452,10 @@ export const FOOTER = {
   ],
 
   socials: [
-    { icon: "Twitter",   href: "https://twitter.com/pharmaagent" },
-    { icon: "Instagram", href: "https://instagram.com/pharmaagent" },
-    { icon: "Linkedin",  href: "https://linkedin.com/company/pharmaagent" },
-    { icon: "Youtube",   href: "https://youtube.com/pharmaagent" },
+    { icon: "Twitter",   href: "https://twitter.com/Cherri+" },
+    { icon: "Instagram", href: "https://instagram.com/Cherri+" },
+    { icon: "Linkedin",  href: "https://linkedin.com/company/Cherri+" },
+    { icon: "Youtube",   href: "https://youtube.com/Cherri+" },
   ],
 
   linkColumns: [
@@ -488,7 +488,7 @@ export const FOOTER = {
       { label: "Resources", href: "/resources" },
     ],
     legal: "Terms & Conditions · Privacy Policy",
-    copyright: "© 2025 PharmaAgent Inc. All rights reserved.",
+    copyright: "© 2025 Cherri+ Inc. All rights reserved.",
   },
 }
 ```

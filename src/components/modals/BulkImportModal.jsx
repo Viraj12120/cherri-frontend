@@ -167,7 +167,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess }) => {
           </button>
         </div>
 
-        <div className="p-6 md:p-8 max-h-[85vh] overflow-y-auto custom-scrollbar">
+        <div className="p-6 md:p-8 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
 
           {/* Step 2: Upload */}
           {step === STEPS.UPLOAD && (

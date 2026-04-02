@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Terminal, Send, Loader2, Cpu, ChevronRight, X, Zap } from 'lucide-react';
+import api from '../lib/axios';
 
 const EXAMPLE_QUERIES = [
   'Which medicines are critically low right now?',
@@ -9,44 +10,6 @@ const EXAMPLE_QUERIES = [
   'How many units of Metformin do we have?',
 ];
 
-const MOCK_RESPONSES = {
-  default: {
-    answer: "Based on the current inventory data, I found the following information:\n\n**Critical Stock Items:**\n• Metformin 500mg (12 units) — minimum threshold: 200 units\n• Cetirizine 10mg (8 units) — minimum threshold: 120 units\n\mBoth require immediate reordering to prevent stockout.",
-    confidence: 0.87,
-    latency_ms: 1243,
-    doc_count: 3,
-    sources: [
-      { doc_id: 'inv_met500', medicine_name: 'Metformin 500mg', content: 'Batch B-2024-01. Quantity: 12. Expiry: 2025-03-15.', relevance_score: 0.92 },
-      { doc_id: 'inv_cet010', medicine_name: 'Cetirizine 10mg', content: 'Batch B-2024-07. Quantity: 8. Expiry: 2025-12-01.', relevance_score: 0.88 },
-    ],
-  },
-};
-
-const getResponse = (query) => {
-  const q = query.toLowerCase();
-  if (q.includes('expir')) return {
-    answer: "Medicines expiring within 30 days:\n\n• **Metformin 500mg** — Batch B-2024-01 expires 2025-03-15 (12 units at risk)\n• **Atorvastatin 10mg** — Batch B-2024-04 expires 2025-03-28 (89 units)\n\nRecommendation: Prioritize consumption of these batches and initiate redistribution if possible.",
-    confidence: 0.91, latency_ms: 987, doc_count: 2,
-    sources: [
-      { doc_id: 'inv_met500', medicine_name: 'Metformin 500mg', content: 'Expiry: 2025-03-15. Quantity: 12.', relevance_score: 0.94 },
-    ],
-  };
-  if (q.includes('order')) return {
-    answer: "Current pending orders awaiting approval:\n\n• **PO-4821** — Insulin Glargine, 480 units, ₹8,640 (AI Agent, HIGH priority)\n• **PO-4826** — Cetirizine 10mg, 600 units, ₹720 (AI Agent, MEDIUM priority)\n\nBoth orders were suggested by the Replenishment Agent based on critically low stock levels.",
-    confidence: 0.89, latency_ms: 1102, doc_count: 2,
-    sources: [
-      { doc_id: 'ord_4821', medicine_name: 'Insulin Glargine', content: 'PO-4821. Qty: 480. Status: PENDING.', relevance_score: 0.91 },
-    ],
-  };
-  if (q.includes('metformin')) return {
-    answer: "Current Metformin 500mg stock status:\n\n• **Available units:** 12\n• **Minimum threshold:** 200 units\n• **Days of stock remaining:** ~3 days at current consumption rate\n• **Batch:** B-2024-01, expires 2025-03-15\n\n⚠️ CRITICAL — Immediate reorder required. Suggested quantity: 2,400 units.",
-    confidence: 0.95, latency_ms: 854, doc_count: 1,
-    sources: [
-      { doc_id: 'inv_met500', medicine_name: 'Metformin 500mg', content: 'Quantity: 12. Batch: B-2024-01. Low stock threshold: 200.', relevance_score: 0.97 },
-    ],
-  };
-  return MOCK_RESPONSES.default;
-};
 
 const NLQueryTerminal = () => {
   const [input, setInput] = useState('');
@@ -67,10 +30,21 @@ const NLQueryTerminal = () => {
     setLoading(true);
     setHistory(h => [...h, { type: 'query', text: query, id: Date.now() }]);
 
-    await new Promise(r => setTimeout(r, 800 + Math.random() * 600));
-    const resp = getResponse(query);
-    setHistory(h => [...h, { type: 'response', ...resp, id: Date.now() + 1 }]);
-    setLoading(false);
+    try {
+      const { data } = await api.post('/ai/query', { query });
+      setHistory(h => [...h, { type: 'response', ...data, id: Date.now() + 1 }]);
+    } catch (err) {
+      setHistory(h => [...h, {
+        type: 'response',
+        answer: err.response?.data?.detail || "Sorry, I couldn't reach the backend API right now.",
+        confidence: 0,
+        latency_ms: 0,
+        doc_count: 0,
+        id: Date.now() + 1
+      }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleKey = (e) => {
@@ -99,7 +73,7 @@ const NLQueryTerminal = () => {
             </div>
             <div className="flex items-center gap-2 ml-2">
               <Terminal size={12} className="text-acid" />
-              <span className="text-[11px] font-mono text-white/40">pharmaagent — nl-query</span>
+              <span className="text-[11px] font-mono text-white/40">CherriPlus — nl-query</span>
             </div>
             <div className="ml-auto flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
@@ -112,7 +86,7 @@ const NLQueryTerminal = () => {
             {history.length === 0 && (
               <div className="space-y-3">
                 <p className="text-white/20">
-                  <span className="text-acid">PharmaAgent</span> NL Query v1.0 — Powered by Ollama Mistral + ChromaDB RAG
+                  <span className="text-acid">CherriPlus</span> NL Query v1.0 — Powered by Ollama Mistral + ChromaDB RAG
                 </p>
                 <p className="text-white/20">Type your question below or try an example:</p>
                 <div className="flex flex-wrap gap-2 mt-2">

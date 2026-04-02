@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Package, Search, AlertCircle, Clock, TrendingDown, Plus, Download, Eye, Edit, Trash2, Upload } from 'lucide-react';
-import BulkImportModal from '../../components/dashboard/BulkImportModal';
+import BulkImportModal from '../../components/modals/BulkImportModal';
 import api from '../../lib/axios';
 import { useUiStore } from '../../stores/uiStore';
 import Skeleton, { TableRowSkeleton } from '../../components/ui/Skeleton';

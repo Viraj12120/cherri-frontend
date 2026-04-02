@@ -4,6 +4,7 @@ import api from '../../lib/axios';
 import { useUiStore } from '../../stores/uiStore';
 import Skeleton, { TableRowSkeleton } from '../../components/ui/Skeleton';
 import StatusBadge from '../../components/ui/StatusBadge';
+import NewOrderModal from '../../components/modals/NewOrderModal';
 
 const statusPipeline = ['PENDING', 'APPROVED', 'ORDERED', 'IN TRANSIT', 'RECEIVED'];
 
@@ -13,6 +14,7 @@ const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('All');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchOrders();
@@ -36,10 +38,17 @@ const OrdersPage = () => {
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      // Typically /orders/:id/status or specific endpoints
-      await api.put(`/orders/${orderId}/status`, { status: newStatus });
-      addToast({ type: 'success', message: `Order marked as ${newStatus}` });
-      fetchOrders(); // Refresh
+      let endpoint = '';
+      if (newStatus === 'APPROVED') endpoint = `/orders/${orderId}/approve`;
+      else if (newStatus === 'CANCELLED') endpoint = `/orders/${orderId}/cancel`;
+      else if (newStatus === 'ORDERED') endpoint = `/orders/${orderId}/mark-ordered`;
+      else if (newStatus === 'RECEIVED') endpoint = `/orders/${orderId}/receive`;
+
+      if (endpoint) {
+        await api.patch(endpoint, {});
+        addToast({ type: 'success', message: `Order marked as ${newStatus}` });
+        fetchOrders();
+      }
     } catch (err) {
       addToast({ type: 'error', message: err.response?.data?.detail || 'Failed to update order status.' });
     }
@@ -56,7 +65,10 @@ const OrdersPage = () => {
           <h1 className="text-2xl font-bold text-white mb-1">Orders</h1>
           <p className="text-white/40 text-sm">Purchase orders created manually and by the AI replenishment agent.</p>
         </div>
-        <button className="bg-acid text-void text-xs font-bold px-4 py-2 rounded-lg hover:brightness-110 transition-all flex items-center gap-2 w-fit">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="bg-acid text-void text-xs font-bold px-4 py-2 rounded-lg hover:brightness-110 transition-all flex items-center gap-2 w-fit"
+        >
           <Plus size={14} /> New Order
         </button>
       </div>
@@ -199,6 +211,12 @@ const OrdersPage = () => {
           </table>
         </div>
       </div>
+
+      <NewOrderModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onSuccess={() => { setIsModalOpen(false); fetchOrders(); }} 
+      />
     </div>
   );
 };

@@ -10,6 +10,7 @@ export const useUiStore = create((set, get) => ({
   sidebarOpen: false,
   activeTab: null,
   toasts: [],
+  unreadAlertsCount: 0,
 
   // ── Actions ──────────────────────────────────────────────────────────
 
@@ -18,6 +19,8 @@ export const useUiStore = create((set, get) => ({
   toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
 
   setActiveTab: (tab) => set({ activeTab: tab }),
+
+  setUnreadAlertsCount: (count) => set({ unreadAlertsCount: count }),
 
   /**
    * Add a toast notification.

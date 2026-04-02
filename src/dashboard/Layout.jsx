@@ -4,12 +4,13 @@ import { Outlet, NavLink, useLocation, useNavigate, useParams } from 'react-rout
 import {
   Home, Box, Cpu, LineChart, RefreshCw,
   ClipboardList, AlertTriangle, Settings, Sparkles,
-  BarChart3, Bell, Search,
+  BarChart3, Bell, Search, Building2,
   ChevronLeft, ChevronRight, User, Users, LogOut, CreditCard
 } from 'lucide-react';
 
 import { PATHS } from '../routes/paths';
 import { useAuthStore } from '../stores/authStore';
+import { useUiStore } from '../stores/uiStore';
 
 import NLQueryTerminal from './NLQueryTerminal';
 import MobileRestriction from './components/MobileRestriction';
@@ -20,16 +21,20 @@ const DashboardLayout = () => {
   const navigate = useNavigate();
   const { tenantId } = useParams();
 
+  const unreadAlertsCount = useUiStore((s) => s.unreadAlertsCount);
+
   const menuItems = [
     { icon: Home, label: t('dashboard.sidebar.overview'), path: PATHS.dashboard(tenantId), end: true },
     { icon: Box, label: t('dashboard.sidebar.inventory'), path: PATHS.inventory(tenantId) },
     { icon: ClipboardList, label: t('dashboard.sidebar.orders'), path: PATHS.orders(tenantId) },
-    { icon: AlertTriangle, label: t('dashboard.sidebar.alerts'), path: PATHS.alerts(tenantId), badge: 12, badgeColor: 'bg-danger/20 text-danger' },
+    { icon: Building2, label: 'Suppliers', path: PATHS.suppliers(tenantId) },
+    { icon: AlertTriangle, label: t('dashboard.sidebar.alerts'), path: PATHS.alerts(tenantId), badge: unreadAlertsCount > 0 ? unreadAlertsCount : undefined, badgeColor: 'bg-danger/20 text-danger' },
     { icon: Sparkles, label: t('dashboard.sidebar.agents'), path: PATHS.agents(tenantId) },
+    { icon: RefreshCw, label: t('dashboard.sidebar.redistribution'), path: PATHS.redistributions(tenantId) },
+    { icon: Users, label: 'Team', path: PATHS.users(tenantId) },
     { icon: CreditCard, label: t('dashboard.sidebar.billing'), path: PATHS.billing(tenantId) },
     { icon: Settings, label: t('dashboard.sidebar.settings'), path: PATHS.settings(tenantId) },
     { icon: LineChart, label: t('dashboard.sidebar.forecasting'), path: null, disabled: true },
-    { icon: RefreshCw, label: t('dashboard.sidebar.redistribution'), path: PATHS.redistributions(tenantId), disabled: true },
   ];
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
@@ -174,7 +179,7 @@ const DashboardLayout = () => {
               className="relative text-white/50 hover:text-white transition-colors"
             >
               <Bell size={20} />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-danger rounded-full ring-2 ring-void"></span>
+              {unreadAlertsCount > 0 && <span className="absolute -top-1 -right-1 w-2 h-2 bg-danger rounded-full ring-2 ring-void"></span>}
             </NavLink>
             <div className="h-6 w-px bg-white/10"></div>
             <button className="text-sm font-bold text-acid flex items-center gap-2">

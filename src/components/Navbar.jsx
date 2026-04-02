@@ -124,7 +124,7 @@ const Navbar = ({ currentView = 'landing', isMenuOpen, setIsMenuOpen }) => {
             onClick={() => setLangDropdownOpen(!langDropdownOpen)}
             className="h-8 flex items-center justify-center gap-1.5 px-3 rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-colors text-[11px] font-bold tracking-wider"
           >
-            {i18n.language ? i18n.language.toUpperCase() : 'EN'} <Globe size={14} />
+            <Globe size={14} />
           </button>
 
           {langDropdownOpen && (

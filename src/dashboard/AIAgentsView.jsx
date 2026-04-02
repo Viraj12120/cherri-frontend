@@ -67,7 +67,7 @@ const AIAgentsView = () => {
     <div className="space-y-8 max-w-[1400px] mx-auto pb-20">
       <div>
         <h1 className="text-2xl font-bold text-white mb-1">AI Agents</h1>
-        <p className="text-white/40 text-sm">Status and action log of all autonomous agents in PharmaAgent.</p>
+        <p className="text-white/40 text-sm">Status and action log of all autonomous agents in Cherri+.</p>
       </div>
 
       {/* Agent Cards */}

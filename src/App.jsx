@@ -49,6 +49,8 @@ import AIQueryPage from './pages/dashboard/AIQueryPage';
 import BillingPage from './pages/dashboard/BillingPage';
 import UsersPage from './pages/dashboard/UsersPage';
 import AuditLogPage from './pages/dashboard/AuditLogPage';
+import SuppliersPage from './pages/dashboard/SuppliersPage';
+import RedistributionsPage from './pages/dashboard/RedistributionsPage';
 import ErrorBoundary from './components/ErrorBoundary';
 import OfflineBanner from './components/OfflineBanner';
 
@@ -176,12 +178,12 @@ function App() {
           <Route path="medicines" element={<PlaceholderPage title="Medicines" />} />
           <Route path="orders" element={<OrdersPage />} />
           <Route path="orders/:orderId" element={<PlaceholderPage title="Order Detail" />} />
-          <Route path="suppliers" element={<PlaceholderPage title="Suppliers" />} />
+          <Route path="suppliers" element={<SuppliersPage />} />
           <Route path="alerts" element={<AlertsPage />} />
           <Route path="agents" element={<AgentsPage />} />
           <Route path="agents/:agentActionId" element={<PlaceholderPage title="Agent Detail" />} />
           {/* <Route path="ai-query" element={<AIQueryPage />} /> */}
-          <Route path="redistributions" element={<PlaceholderPage title="Redistributions" />} />
+          <Route path="redistributions" element={<RedistributionsPage />} />
           <Route path="billing" element={<BillingPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route
