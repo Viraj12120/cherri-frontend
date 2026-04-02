@@ -80,8 +80,8 @@ const BillingPage = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
 
   useEffect(() => {
-     // Clean up payment state on mount
-     reset();
+    // Clean up payment state on mount
+    reset();
   }, []);
 
   const handlePayment = async (plan) => {
@@ -108,12 +108,12 @@ const BillingPage = () => {
       }
 
       const order = await createOrder(plan.id);
-      
+
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: order.amount,
         currency: order.currency || 'INR',
-        name: 'CherriPlus Pharma',
+        name: 'Cherri+ Pharma',
         description: `Subscription: ${plan.name} Plan`,
         image: '/vite.svg',
         order_id: order.razorpay_order_id || order.order_id,
@@ -150,8 +150,8 @@ const BillingPage = () => {
     <div className="max-w-6xl mx-auto py-8 px-6 pb-24">
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-2">
-           <CreditCard className="text-acid" size={24} />
-           <h1 className="text-2xl font-bold text-white tracking-tight">Subscription & Billing</h1>
+          <CreditCard className="text-acid" size={24} />
+          <h1 className="text-2xl font-bold text-white tracking-tight">Subscription & Billing</h1>
         </div>
         <p className="text-white/40 text-sm max-w-2xl">
           Scale your pharmacy business with our AI-powered operational tools.
@@ -161,16 +161,16 @@ const BillingPage = () => {
 
       {/* Current Plan Overview */}
       <div className="bg-[#161618] border border-white/5 rounded-2xl p-6 mb-12 flex flex-col md:flex-row items-center gap-8 shadow-2xl">
-         <div className="w-16 h-16 rounded-2xl bg-acid/10 flex items-center justify-center border border-acid/20 shrink-0">
-            <Zap className="text-acid" size={32} />
-         </div>
-         <div className="flex-1 text-center md:text-left">
-            <h3 className="text-lg font-bold text-white mb-1">Current Plan: Free Trial</h3>
-            <p className="text-white/40 text-sm">Your trial expires in <span className="text-acid font-bold">14 days</span>. Upgrade now to unlock full agent capabilities.</p>
-         </div>
-         <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-xl text-white/60 text-xs font-bold border border-white/5">
-            <Shield size={14} className="text-success" /> Verified Identity
-         </div>
+        <div className="w-16 h-16 rounded-2xl bg-acid/10 flex items-center justify-center border border-acid/20 shrink-0">
+          <Zap className="text-acid" size={32} />
+        </div>
+        <div className="flex-1 text-center md:text-left">
+          <h3 className="text-lg font-bold text-white mb-1">Current Plan: Free Trial</h3>
+          <p className="text-white/40 text-sm">Your trial expires in <span className="text-acid font-bold">14 days</span>. Upgrade now to unlock full agent capabilities.</p>
+        </div>
+        <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-xl text-white/60 text-xs font-bold border border-white/5">
+          <Shield size={14} className="text-success" /> Verified Identity
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
@@ -179,7 +179,7 @@ const BillingPage = () => {
           const isLoading = selectedPlan === plan.id;
 
           return (
-            <div 
+            <div
               key={plan.id}
               className={`bg-[#0A0C10] border rounded-3xl p-8 flex flex-col relative group transition-all duration-500 hover:translate-y-[-8px] ${plan.borderColor || 'border-white/5'}`}
             >
@@ -190,28 +190,28 @@ const BillingPage = () => {
               )}
 
               <div className={`absolute inset-0 bg-gradient-to-b ${plan.color} opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl -z-10`} />
-              
+
               <div className="mb-8">
-                 <div className="p-3 bg-white/5 rounded-2xl inline-flex mb-6 text-white group-hover:text-acid transition-colors">
-                    <plan.icon size={28} />
-                 </div>
-                 <h4 className="text-xl font-bold text-white mb-2">{plan.name}</h4>
-                 <div className="flex items-baseline gap-1 mb-2">
-                    <span className="text-3xl font-bold text-white">{plan.price}</span>
-                    <span className="text-xs text-white/40">{plan.period}</span>
-                 </div>
-                 <p className="text-xs text-white/50 leading-relaxed">{plan.description}</p>
+                <div className="p-3 bg-white/5 rounded-2xl inline-flex mb-6 text-white group-hover:text-acid transition-colors">
+                  <plan.icon size={28} />
+                </div>
+                <h4 className="text-xl font-bold text-white mb-2">{plan.name}</h4>
+                <div className="flex items-baseline gap-1 mb-2">
+                  <span className="text-3xl font-bold text-white">{plan.price}</span>
+                  <span className="text-xs text-white/40">{plan.period}</span>
+                </div>
+                <p className="text-xs text-white/50 leading-relaxed">{plan.description}</p>
               </div>
 
               <div className="space-y-4 flex-1 mb-8">
-                 {plan.features.map((feature, i) => (
-                   <div key={i} className="flex items-start gap-3">
-                      <div className="mt-1 w-4 h-4 rounded-full bg-success/20 flex items-center justify-center shrink-0">
-                         <Check size={10} className="text-success" />
-                      </div>
-                      <span className="text-xs text-white/70">{feature}</span>
-                   </div>
-                 ))}
+                {plan.features.map((feature, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="mt-1 w-4 h-4 rounded-full bg-success/20 flex items-center justify-center shrink-0">
+                      <Check size={10} className="text-success" />
+                    </div>
+                    <span className="text-xs text-white/70">{feature}</span>
+                  </div>
+                ))}
               </div>
 
               <button
@@ -228,13 +228,13 @@ const BillingPage = () => {
       </div>
 
       <div className="mt-16 text-center">
-         <div className="inline-flex items-center gap-2 text-white/20 text-[10px] uppercase font-bold tracking-[0.2em] mb-4">
-            <Sparkles size={14} /> Powered by Razorpay Security
-         </div>
-         <p className="text-[10px] text-white/20 max-w-lg mx-auto leading-relaxed">
-           Your transactions are secure and encrypted. CherriPlus does not store your credit card details. 
-           Invoices will be sent to <strong>{user?.email}</strong>.
-         </p>
+        <div className="inline-flex items-center gap-2 text-white/20 text-[10px] uppercase font-bold tracking-[0.2em] mb-4">
+          <Sparkles size={14} /> Powered by Razorpay Security
+        </div>
+        <p className="text-[10px] text-white/20 max-w-lg mx-auto leading-relaxed">
+          Your transactions are secure and encrypted. Cherri+ does not store your credit card details.
+          Invoices will be sent to <strong>{user?.email}</strong>.
+        </p>
       </div>
     </div>
   );

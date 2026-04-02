@@ -67,7 +67,7 @@ const UseCase = () => {
           <div className="w-[300px] h-[600px] bg-void border-[8px] border-white/10 rounded-[40px] shadow-[0_40px_100px_rgba(0,0,0,0.6)] relative overflow-hidden flex flex-col pt-8 use-case-phone">
             <div className="flex items-center gap-2 px-6 mb-8">
               <span className="text-acid text-xs">●</span>
-              <span className="text-xs font-bold font-mono">Cherriplus</span>
+              <span className="text-xs font-bold font-mono">Cherri+</span>
             </div>
 
             <div className="px-6 mb-8">
@@ -144,7 +144,7 @@ const UseCase = () => {
                   <p className="text-white/70 text-[14px] italic leading-relaxed">"{activeContent.pain}"</p>
                 </div>
 
-                <h4 className="text-white text-sm font-medium mb-2">How Cherriplus Solves It:</h4>
+                <h4 className="text-white text-sm font-medium mb-2">How Cherri+ Solves It:</h4>
                 <p className="text-white/55 text-[14px] leading-relaxed mb-6 font-light">{activeContent.how}</p>
 
                 <h4 className="text-white text-sm font-medium mb-3">Outcome:</h4>

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cherriplus-v2'; // Bumped version
+const CACHE_NAME = 'Cherri+-v2'; // Bumped version
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -38,8 +38,8 @@ self.addEventListener('fetch', (event) => {
   // 1. Bypass Service Worker for API calls and external scripts (like Razorpay)
   // This prevents issues with authentication, data fetching, and third-party integrations.
   if (
-    url.pathname.startsWith('/api/') || 
-    url.hostname.includes('razorpay.com') || 
+    url.pathname.startsWith('/api/') ||
+    url.hostname.includes('razorpay.com') ||
     url.hostname !== self.location.hostname
   ) {
     return; // Returning nothing here lets the browser handle the fetch naturally
@@ -51,13 +51,13 @@ self.addEventListener('fetch', (event) => {
       if (cachedResponse) {
         return cachedResponse;
       }
-      
+
       // If not in cache, try network
       return fetch(event.request).then((fetchResponse) => {
         // Only cache successful GET requests for local assets
         if (
-          event.request.method === 'GET' && 
-          fetchResponse.status === 200 && 
+          event.request.method === 'GET' &&
+          fetchResponse.status === 200 &&
           url.hostname === self.location.hostname &&
           !url.pathname.startsWith('/src/') // Don't cache raw source files in development
         ) {
@@ -78,7 +78,7 @@ self.addEventListener('fetch', (event) => {
           });
         }
         // For other requests, just let the error propagate by not returning an invalid object
-        throw err; 
+        throw err;
       });
     })
   );

@@ -131,7 +131,7 @@ const SettingsPage = () => {
           onClick={() => navigate(PATHS.login)}
           className="bg-acid text-void px-8 py-3 rounded-xl font-bold hover:brightness-110 transition-all active:scale-[0.98]"
         >
-          {t('common.sign_in_to_cherriplus')}
+          {t('common.sign_in_to_Cherri+')}
         </button>
       </div>
     );

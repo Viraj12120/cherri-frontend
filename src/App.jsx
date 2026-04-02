@@ -56,7 +56,7 @@ import OfflineBanner from './components/OfflineBanner';
 
 gsap.registerPlugin(ScrollTrigger, TextPlugin, CustomEase);
 
-// Register CherriPlus custom easing curves
+// Register Cherri+ custom easing curves
 CustomEase.create('pharma.out', 'M0,0 C0.16,1 0.3,1 1,1');
 CustomEase.create('pharma.inOut', 'M0,0 C0.5,0 0.5,1 1,1');
 CustomEase.create('pharma.spring', 'M0,0 C0.14,0 0.22,1.13 1,1');

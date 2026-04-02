@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 /**
- * CherriPlus Axios instance.
+ * Cherri+ Axios instance.
  *
  * - Base URL from VITE_API_URL env variable
  * - Request interceptor: attaches Bearer token from authStore

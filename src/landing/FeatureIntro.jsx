@@ -14,32 +14,32 @@ const FeatureIntro = () => {
               {t('feature_intro.badge')}
             </span>
           </div>
-          
+
           <h2 className="reveal-child text-white font-medium leading-tight text-[clamp(28px,3.5vw,48px)] tracking-tight">
             {t('feature_intro.title_pt1')}<br />
             <span className="text-acid">{t('feature_intro.title_pt2')}</span>
           </h2>
-          
+
           <p className="reveal-child text-white/55 text-[16px] leading-[1.75] max-w-[480px] font-light">
             {t('feature_intro.desc')}
           </p>
 
           <div className="flex flex-col gap-8 mt-4">
             {[
-              { 
-                Icon: PlayCircle, 
-                title: t('feature_intro.f1_title'), 
-                body: t('feature_intro.f1_desc') 
+              {
+                Icon: PlayCircle,
+                title: t('feature_intro.f1_title'),
+                body: t('feature_intro.f1_desc')
               },
-              { 
-                Icon: RefreshCw, 
-                title: t('feature_intro.f2_title'), 
-                body: t('feature_intro.f2_desc') 
+              {
+                Icon: RefreshCw,
+                title: t('feature_intro.f2_title'),
+                body: t('feature_intro.f2_desc')
               },
-              { 
-                Icon: Heart, 
-                title: t('feature_intro.f3_title'), 
-                body: t('feature_intro.f3_desc') 
+              {
+                Icon: Heart,
+                title: t('feature_intro.f3_title'),
+                body: t('feature_intro.f3_desc')
               }
             ].map((item, i) => (
               <div key={i} className="flex gap-4 reveal-child group">
@@ -60,24 +60,24 @@ const FeatureIntro = () => {
           <div className="w-[300px] h-[600px] bg-void border-[8px] border-white/10 rounded-[40px] shadow-2xl relative overflow-hidden flex flex-col pt-8">
             <div className="flex items-center gap-2 px-6 mb-8">
               <span className="text-acid text-xs">●</span>
-              <span className="text-sm font-bold tracking-tight">Cherriplus</span>
+              <span className="text-sm font-bold tracking-tight">Cherri+</span>
             </div>
-            
+
             <div className="px-5 mb-8">
               <div className="h-10 bg-white/5 border border-white/10 rounded-full flex items-center px-4 gap-3 text-white/30 text-xs">
-                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                 Search drug or branch...
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                Search drug or branch...
               </div>
             </div>
 
             <div className="flex gap-3 px-5 mb-8">
               <div className="h-8 px-4 bg-white/5 border border-white/10 rounded-full flex items-center gap-2 text-[10px] text-white/60">
-                 Category ▾
+                Category ▾
               </div>
               <div className="flex -space-x-2">
-                 <div className="w-8 h-8 rounded-full bg-acid/20 border border-void flex items-center justify-center text-acid text-[10px]">P</div>
-                 <div className="w-8 h-8 rounded-full bg-coral/20 border border-void flex items-center justify-center text-coral text-[10px]">A</div>
-                 <div className="w-8 h-8 rounded-full bg-white/10 border border-void flex items-center justify-center text-white text-[10px]">+</div>
+                <div className="w-8 h-8 rounded-full bg-acid/20 border border-void flex items-center justify-center text-acid text-[10px]">P</div>
+                <div className="w-8 h-8 rounded-full bg-coral/20 border border-void flex items-center justify-center text-coral text-[10px]">A</div>
+                <div className="w-8 h-8 rounded-full bg-white/10 border border-void flex items-center justify-center text-white text-[10px]">+</div>
               </div>
             </div>
 

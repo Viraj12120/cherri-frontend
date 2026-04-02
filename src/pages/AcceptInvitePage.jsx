@@ -15,7 +15,7 @@ const AcceptInvitePage = () => {
     password: '',
     confirmPassword: '',
   });
-  
+
   const [status, setStatus] = useState('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -46,7 +46,7 @@ const AcceptInvitePage = () => {
         last_name: formData.lastName,
         password: formData.password,
       });
-      
+
       setStatus('success');
       setTimeout(() => navigate(PATHS.login), 3000);
     } catch (err) {
@@ -72,14 +72,14 @@ const AcceptInvitePage = () => {
 
   return (
     <div className="min-h-screen flex bg-[#0f0f11] font-sans text-white items-center justify-center py-12 px-6">
-      
+
       <div className="w-full max-w-[420px] bg-[#161618] border border-white/10 rounded-[24px] p-8 md:p-10 shadow-2xl relative overflow-hidden">
         {/* Glow effect */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-acid/10 rounded-full blur-[80px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
-        
+
         <div className="relative z-10">
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-white mb-2">Join CherriPlus</h1>
+            <h1 className="text-2xl font-bold text-white mb-2">Join Cherri+</h1>
             <p className="text-white/50 text-sm">
               You've been invited to join your organization's workspace. Set up your profile to continue.
             </p>

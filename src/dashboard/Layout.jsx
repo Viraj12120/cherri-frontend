@@ -57,7 +57,7 @@ const DashboardLayout = () => {
           <div className="flex items-center gap-3 overflow-hidden">
             <div className="w-2 h-2 rounded-full bg-acid shadow-[0_0_10px_rgba(232,245,50,0.5)] flex-shrink-0"></div>
             {!isCollapsed && (
-              <span className="font-bold tracking-tight lg:inline hidden">CherriPlus</span>
+              <span className="font-bold tracking-tight lg:inline hidden">Cherri+</span>
             )}
           </div>
           <button

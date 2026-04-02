@@ -9,13 +9,13 @@ const Footer = () => {
         <div className="flex flex-col lg:flex-row justify-between items-start gap-16 mb-16">
           {/* Brand & Positioning */}
           <div className="lg:w-1/3">
-             <div className="flex items-center gap-2 mb-4">
-               <span className="text-acid text-xs">●</span>
-               <span className="font-bold text-lg text-white tracking-tight">Cherriplus</span>
-             </div>
-             <p className="text-white/50 text-[14px] leading-[1.6] max-w-[300px]">
-               {t('footer.tagline')}
-             </p>
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-acid text-xs">●</span>
+              <span className="font-bold text-lg text-white tracking-tight">Cherri+</span>
+            </div>
+            <p className="text-white/50 text-[14px] leading-[1.6] max-w-[300px]">
+              {t('footer.tagline')}
+            </p>
           </div>
 
           {/* Links Grid */}
@@ -30,7 +30,7 @@ const Footer = () => {
                 ))}
               </ul>
             </div>
-            
+
             <div>
               <h5 className="text-white/90 text-sm font-bold mb-6">{t('footer.f_company')}</h5>
               <ul className="space-y-4">
@@ -46,9 +46,9 @@ const Footer = () => {
 
         {/* Trust Badges */}
         <div className="flex flex-wrap items-center gap-6 mb-16 opacity-50 grayscale">
-            <div className="border border-white/20 rounded-md px-3 py-1.5 text-[10px] text-white font-medium uppercase tracking-wider">{t('footer.b1')}</div>
-            <div className="border border-white/20 rounded-md px-3 py-1.5 text-[10px] text-white font-medium uppercase tracking-wider">{t('footer.b2')}</div>
-            <div className="border border-white/20 rounded-md px-3 py-1.5 text-[10px] text-white font-medium uppercase tracking-wider">{t('footer.b3')}</div>
+          <div className="border border-white/20 rounded-md px-3 py-1.5 text-[10px] text-white font-medium uppercase tracking-wider">{t('footer.b1')}</div>
+          <div className="border border-white/20 rounded-md px-3 py-1.5 text-[10px] text-white font-medium uppercase tracking-wider">{t('footer.b2')}</div>
+          <div className="border border-white/20 rounded-md px-3 py-1.5 text-[10px] text-white font-medium uppercase tracking-wider">{t('footer.b3')}</div>
         </div>
 
         {/* Bottom Bar */}
@@ -57,7 +57,7 @@ const Footer = () => {
             <span>{t('footer.rights')}</span>
             <span className="flex items-center gap-1">{t('footer.made_in')}</span>
           </div>
-          
+
           <div className="flex gap-6 items-center">
             <a href="#" className="hover:text-white transition-colors">{t('footer.privacy')}</a>
             <a href="#" className="hover:text-white transition-colors">{t('footer.terms')}</a>

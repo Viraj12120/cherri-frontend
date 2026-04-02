@@ -167,7 +167,7 @@ export const useAuthStore = create(
             id: 'dev-mock-id',
             first_name: 'Dev',
             last_name: 'User',
-            email: 'dev@cherriplus.local',
+            email: 'dev@Cherri+.local',
             role: 'ADMIN',
             tenant_id: 'dev-tenant-id'
           },
@@ -180,7 +180,7 @@ export const useAuthStore = create(
       },
     }),
     {
-      name: 'cherriplus-auth',
+      name: 'Cherri+-auth',
       // Only persist these fields — not loading/error
       partialize: (state) => ({
         accessToken: state.accessToken,

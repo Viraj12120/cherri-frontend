@@ -73,7 +73,7 @@ const NLQueryTerminal = () => {
             </div>
             <div className="flex items-center gap-2 ml-2">
               <Terminal size={12} className="text-acid" />
-              <span className="text-[11px] font-mono text-white/40">CherriPlus — nl-query</span>
+              <span className="text-[11px] font-mono text-white/40">Cherri+ — nl-query</span>
             </div>
             <div className="ml-auto flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
@@ -86,7 +86,7 @@ const NLQueryTerminal = () => {
             {history.length === 0 && (
               <div className="space-y-3">
                 <p className="text-white/20">
-                  <span className="text-acid">CherriPlus</span> NL Query v1.0 — Powered by Ollama Mistral + ChromaDB RAG
+                  <span className="text-acid">Cherri+</span> NL Query v1.0 — Powered by Ollama Mistral + ChromaDB RAG
                 </p>
                 <p className="text-white/20">Type your question below or try an example:</p>
                 <div className="flex flex-wrap gap-2 mt-2">
