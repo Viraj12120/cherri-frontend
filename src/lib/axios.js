@@ -129,7 +129,10 @@ api.interceptors.response.use(
       mod.useAuthStore.getState().logout();
 
       if (typeof window !== 'undefined') {
-        window.location.href = '/login';
+        const publicPaths = ['/', '/login', '/signup', '/pricing', '/forgot-password', '/reset-password'];
+        if (!publicPaths.includes(window.location.pathname)) {
+          window.location.href = '/login';
+        }
       }
 
       return Promise.reject(refreshError);
