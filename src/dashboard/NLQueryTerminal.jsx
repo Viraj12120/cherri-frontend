@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Terminal, Send, Loader2, Cpu, ChevronRight, X, Zap, Plus } from 'lucide-react';
+import { Terminal, Send, Loader2, Cpu, ChevronRight, X, Zap, Plus, RotateCcw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../lib/axios';
 
@@ -21,6 +21,11 @@ const NLQueryTerminal = () => {
   const [isMaximized, setIsMaximized] = useState(false);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
+
+  const clearHistory = () => {
+    setHistory([]);
+    setLoading(false);
+  };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -121,9 +126,19 @@ const NLQueryTerminal = () => {
               <Terminal size={12} className="text-acid" />
               <span className="text-[11px] font-mono text-white/40">Cherri+ — nl-query</span>
             </div>
-            <div className="ml-auto flex items-center gap-1.5 pointer-events-none">
-              <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-              <span className="text-[10px] text-success font-bold">AI ONLINE</span>
+            <div className="ml-auto flex items-center gap-2">
+              <button
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => { e.stopPropagation(); clearHistory(); }}
+                className="p-1 hover:bg-white/10 rounded transition-colors text-white/30 hover:text-white/60"
+                title="Clear Terminal"
+              >
+                <RotateCcw size={12} />
+              </button>
+              <div className="flex items-center gap-1.5 pointer-events-none border-l border-white/10 pl-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+                <span className="text-[10px] text-success font-bold">AI ONLINE</span>
+              </div>
             </div>
           </div>
 
