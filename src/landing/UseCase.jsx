@@ -161,9 +161,12 @@ const UseCase = () => {
           </div>
 
           <div className="mt-6 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center gap-6">
-            <button className="h-12 w-full sm:w-auto px-8 bg-acid border border-acid rounded-full text-sm font-bold text-void hover:bg-white hover:text-void hover:border-white transition-all duration-300 active:scale-95 shadow-[0_4px_14px_rgba(232,245,50,0.2)]">
-              {t('use_case.cta1')}
-            </button>
+            <a 
+              href="mailto:developer@cherriplus.com?subject=Cherri+%20Review%20Request"
+              className="h-12 w-full sm:w-auto px-8 flex items-center justify-center bg-acid border border-acid rounded-full text-sm font-bold text-void hover:bg-white hover:text-void hover:border-white transition-all duration-300 active:scale-95 shadow-[0_4px_14px_rgba(232,245,50,0.2)]"
+            >
+              Send Review to Developer
+            </a>
 
           </div>
         </div>
