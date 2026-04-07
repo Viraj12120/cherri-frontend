@@ -9,6 +9,7 @@ export const PATHS = {
   resetPassword: '/reset-password',
   verifyEmail: '/verify-email',
   acceptInvite: '/accept-invite',
+  googleCallback: '/auth/callback',
   pricing: '/pricing',
 
   // React Router Base Definitions

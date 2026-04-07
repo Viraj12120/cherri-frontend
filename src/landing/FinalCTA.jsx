@@ -22,10 +22,18 @@ const FinalCTA = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center gap-4 mb-6 w-full sm:w-auto">
-          <button className="h-12 bg-acid text-void font-bold text-sm px-8 rounded-full hover:brightness-110 active:scale-95 transition-all shadow-[0_4px_14px_rgba(232,245,50,0.3)] w-full sm:w-auto">
-            {t('final_cta.btn1')}
+          <a 
+            href="#roi"
+            className="h-12 bg-acid text-void font-bold text-sm px-8 rounded-full hover:brightness-110 active:scale-95 transition-all shadow-[0_4px_14px_rgba(232,245,50,0.3)] w-full sm:w-auto flex items-center justify-center uppercase tracking-tight"
+          >
+            Calculate Your ROI →
+          </a>
+          <button 
+            onClick={() => window.location.href = '/signup'}
+            className="h-12 bg-white/5 border border-white/10 text-white font-bold text-sm px-8 rounded-full hover:bg-white/10 active:scale-95 transition-all w-full sm:w-auto flex items-center justify-center uppercase tracking-tight"
+          >
+            Get Started
           </button>
-
         </div>
 
         <div className="flex flex-col items-center gap-3">

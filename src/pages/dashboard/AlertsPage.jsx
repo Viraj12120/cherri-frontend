@@ -4,10 +4,13 @@ import api from '../../lib/axios';
 import { useUiStore } from '../../stores/uiStore';
 import Skeleton from '../../components/ui/Skeleton';
 
-const severityConfig = {
-  critical: { color: 'text-danger', bg: 'bg-danger/10 border-danger/20', dot: 'bg-danger', icon: AlertTriangle },
-  warning: { color: 'text-warn', bg: 'bg-warn/10 border-warn/20', dot: 'bg-warn', icon: TrendingDown },
-  info: { color: 'text-acid', bg: 'bg-acid/10 border-acid/20', dot: 'bg-acid', icon: Bell },
+// Map alert_type to severity config
+const alertTypeConfig = {
+  low_stock: { color: 'text-danger', bg: 'bg-danger/10 border-danger/20', dot: 'bg-danger', icon: AlertTriangle },
+  expiring_soon: { color: 'text-warn', bg: 'bg-warn/10 border-warn/20', dot: 'bg-warn', icon: Clock },
+  plan_limit: { color: 'text-acid', bg: 'bg-acid/10 border-acid/20', dot: 'bg-acid', icon: Package },
+  agent_action: { color: 'text-acid', bg: 'bg-acid/10 border-acid/20', dot: 'bg-acid', icon: Bell },
+  default: { color: 'text-white/60', bg: 'bg-white/5 border-white/10', dot: 'bg-white/40', icon: Bell },
 };
 
 const AlertsPage = () => {
@@ -15,7 +18,7 @@ const AlertsPage = () => {
   
   const [alerts, setAlerts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState('All'); // All | Unread | low_stock | expiring_soon | agent_action
 
   useEffect(() => {
     fetchAlerts();
@@ -26,7 +29,8 @@ const AlertsPage = () => {
       setIsLoading(true);
       const { data } = await api.get('/alerts');
       const items = Array.isArray(data) ? data : (data.items || data.data || []);
-      setAlerts(items);
+      // Filter out archived immediately on fetch
+      setAlerts(items.filter(a => a.status !== 'archived'));
     } catch (err) {
       addToast({ type: 'error', message: 'Failed to load system alerts.' });
     } finally {
@@ -36,8 +40,8 @@ const AlertsPage = () => {
 
   const markRead = async (id) => {
     try {
-      await api.put(`/alerts/${id}/read`);
-      setAlerts(alerts.map(a => a.id === id ? { ...a, is_read: true } : a));
+      await api.put(`/alerts/${id}`, { status: 'read' });
+      setAlerts(alerts.map(a => a.id === id ? { ...a, status: 'read' } : a));
     } catch (err) {
       addToast({ type: 'error', message: 'Could not mark alert as read.' });
     }
@@ -45,8 +49,8 @@ const AlertsPage = () => {
 
   const markAllRead = async () => {
     try {
-      await api.put('/alerts/read-all');
-      setAlerts(alerts.map(a => ({ ...a, is_read: true })));
+      await api.post('/alerts/mark-all-read');
+      setAlerts(alerts.map(a => (a.status === 'unread' ? { ...a, status: 'read' } : a)));
       addToast({ type: 'success', message: 'All alerts marked as read.' });
     } catch (err) {
       addToast({ type: 'error', message: 'Could not mark all alerts as read.' });
@@ -55,20 +59,20 @@ const AlertsPage = () => {
 
   const dismiss = async (id) => {
     try {
-      await api.delete(`/alerts/${id}`);
+      await api.put(`/alerts/${id}`, { status: 'archived' });
       setAlerts(alerts.filter(a => a.id !== id));
     } catch (err) {
       addToast({ type: 'error', message: 'Could not dismiss alert.' });
     }
   };
 
-  const unreadCount = alerts.filter(a => !a.is_read).length;
+  const unreadCount = alerts.filter(a => a.status === 'unread').length;
 
   const filtered = filter === 'All' 
     ? alerts 
     : filter === 'Unread' 
-      ? alerts.filter(a => !a.is_read) 
-      : alerts.filter(a => (a.severity || 'info').toLowerCase() === filter.toLowerCase());
+      ? alerts.filter(a => a.status === 'unread') 
+      : alerts.filter(a => a.alert_type === filter);
 
   return (
     <div className="space-y-8 max-w-[1400px] mx-auto pb-20">
@@ -95,8 +99,8 @@ const AlertsPage = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: 'Total Alerts', val: alerts.length, icon: Bell, color: 'text-white/60' },
-          { label: 'Critical', val: alerts.filter(a => (a.severity || '').toLowerCase() === 'critical').length, icon: AlertTriangle, color: 'text-danger' },
-          { label: 'Warnings', val: alerts.filter(a => (a.severity || '').toLowerCase() === 'warning').length, icon: Clock, color: 'text-warn' },
+          { label: 'Crit Low Stock', val: alerts.filter(a => a.alert_type === 'low_stock').length, icon: AlertTriangle, color: 'text-danger' },
+          { label: 'Expiring Soon', val: alerts.filter(a => a.alert_type === 'expiring_soon').length, icon: Clock, color: 'text-warn' },
           { label: 'Unread', val: unreadCount, icon: Package, color: 'text-acid' },
         ].map((s, i) => (
           <div key={i} className="bg-[#161618] border border-white/5 p-4 rounded-xl flex items-center gap-3">
@@ -112,11 +116,17 @@ const AlertsPage = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-2 border-b border-white/5 pb-4">
-        {['All', 'Unread', 'Critical', 'Warning', 'Info'].map(f => (
-          <button key={f} onClick={() => setFilter(f)}
-            className={`text-[11px] font-bold px-4 py-1.5 rounded-lg transition-all ${filter === f ? 'bg-acid/20 text-acid border border-acid/30' : 'text-white/40 hover:text-white hover:bg-white/5'}`}>
-            {f}
+      <div className="flex gap-2 border-b border-white/5 pb-4 flex-wrap">
+        {[
+          { id: 'All', label: 'All' },
+          { id: 'Unread', label: 'Unread' },
+          { id: 'low_stock', label: 'Low Stock' },
+          { id: 'expiring_soon', label: 'Expiring' },
+          { id: 'agent_action', label: 'Agent Action' }
+        ].map(f => (
+          <button key={f.id} onClick={() => setFilter(f.id)}
+            className={`text-[11px] font-bold px-4 py-1.5 rounded-lg transition-all ${filter === f.id ? 'bg-acid/20 text-acid border border-acid/30' : 'text-white/40 hover:text-white hover:bg-white/5'}`}>
+            {f.label}
           </button>
         ))}
       </div>
@@ -129,11 +139,10 @@ const AlertsPage = () => {
            ))
         ) : filtered.length > 0 ? (
           filtered.map(alert => {
-            const severity = (alert.severity || 'info').toLowerCase();
-            const cfg = severityConfig[severity] || severityConfig.info;
+            const cfg = alertTypeConfig[alert.alert_type] || alertTypeConfig.default;
             const Icon = cfg.icon;
             const alertId = alert.id;
-            const isRead = alert.is_read || alert.read || false;
+            const isRead = alert.status === 'read';
 
             return (
               <div key={alertId} className={`border rounded-xl p-4 flex items-start gap-4 transition-all ${isRead ? 'bg-[#1a1a1c] border-white/5 opacity-70' : `${cfg.bg}`}`}>

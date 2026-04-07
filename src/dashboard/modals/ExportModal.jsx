@@ -1,24 +1,73 @@
 import React, { useState } from 'react';
 import { Download, FileText, Table2, Check, CheckCircle, Loader2 } from 'lucide-react';
 import { Modal, ModalHeader } from '../components/ModalBase';
+import api from '../../lib/axios';
+import { useUiStore } from '../../stores/uiStore';
 
 const ExportModal = ({ onClose }) => {
+  const addToast = useUiStore((s) => s.addToast);
   const [format, setFormat] = useState('csv');
-  const [range, setRange] = useState('7d');
-  const [sections, setSections] = useState({ inventory: true, orders: true, alerts: true, expiry: false });
+  const [sections, setSections] = useState({ inventory: true, orders: false, audit: false, suppliers: false, users: false });
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
-  const handleExport = () => {
-    setLoading(true);
-    setTimeout(() => { setLoading(false); setDone(true); }, 1800);
+  const toggle = (key) => setSections(s => ({ ...s, [key]: !s[key] }));
+
+  const downloadBlob = (data, filename, contentType) => {
+    const blob = new Blob([data], { type: contentType });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
   };
 
-  const toggle = (key) => setSections(s => ({ ...s, [key]: !s[key] }));
+  const handleExport = async () => {
+    setLoading(true);
+    try {
+      const selected = Object.entries(sections).filter(([, v]) => v).map(([k]) => k);
+      if (selected.length === 0) {
+        addToast({ type: 'error', message: 'Select at least one section to export.' });
+        setLoading(false);
+        return;
+      }
+
+      const exportMap = {
+        inventory: { url: '/imports/template/inventory', filename: `inventory_export.${format}` },
+        orders: { url: `/orders/?limit=1000`, filename: `orders_export.${format}` },
+        audit: { url: '/audit-log/export', filename: `audit_log.csv` },
+        suppliers: { url: `/export/suppliers?format=${format}`, filename: `suppliers_export.${format}` },
+        users: { url: `/export/users?format=${format}`, filename: `users_export.${format}` },
+      };
+
+      for (const key of selected) {
+        const config = exportMap[key];
+        if (!config) continue;
+
+        try {
+          const response = await api.get(config.url, { responseType: 'blob' });
+          downloadBlob(response.data, config.filename, response.headers['content-type'] || 'text/csv');
+        } catch (err) {
+          console.error(`Export ${key} failed:`, err);
+          addToast({ type: 'error', message: `Failed to export ${key}: ${err.response?.data?.detail || err.message}` });
+        }
+      }
+
+      setDone(true);
+      addToast({ type: 'success', message: `Export complete — ${selected.length} file(s) downloaded.` });
+    } catch (err) {
+      addToast({ type: 'error', message: 'Export failed.' });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Modal onClose={onClose} maxW="max-w-lg">
-      <ModalHeader icon={Download} title="Export Report" subtitle="Download inventory data as CSV or PDF" onClose={onClose} accent="text-acid" />
+      <ModalHeader icon={Download} title="Export Report" subtitle="Download data as CSV or PDF" onClose={onClose} accent="text-acid" />
       <div className="p-6 space-y-5">
         {/* Format */}
         <div>
@@ -40,19 +89,6 @@ const ExportModal = ({ onClose }) => {
           </div>
         </div>
 
-        {/* Date Range */}
-        <div>
-          <p className="text-[11px] font-bold text-white/40 uppercase tracking-widest mb-2">Date Range</p>
-          <div className="flex gap-2 flex-wrap">
-            {[['7d', 'Last 7 days'], ['30d', 'Last 30 days'], ['90d', 'Last 90 days'], ['all', 'All time']].map(([id, label]) => (
-              <button key={id} onClick={() => setRange(id)}
-                className={`text-[11px] font-bold px-3 py-1.5 rounded-lg transition-all ${range === id ? 'bg-acid/20 text-acid border border-acid/30' : 'text-white/40 hover:text-white bg-white/5 border border-transparent'}`}>
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-
         {/* Sections */}
         <div>
           <p className="text-[11px] font-bold text-white/40 uppercase tracking-widest mb-2">Include Sections</p>
@@ -60,8 +96,9 @@ const ExportModal = ({ onClose }) => {
             {[
               { key: 'inventory', label: 'Full Inventory List' },
               { key: 'orders', label: 'Purchase Orders' },
-              { key: 'alerts', label: 'Active Alerts' },
-              { key: 'expiry', label: 'Expiry Report' },
+              { key: 'audit', label: 'Audit Log (CSV only)' },
+              { key: 'suppliers', label: 'Suppliers' },
+              { key: 'users', label: 'Users' },
             ].map(s => (
               <label key={s.key} className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/5 cursor-pointer hover:border-white/10 transition-all">
                 <div onClick={() => toggle(s.key)} className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${sections[s.key] ? 'bg-acid border-acid' : 'border-white/20'}`}>

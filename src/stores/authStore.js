@@ -18,6 +18,9 @@ export const useAuthStore = create(
       isAuthenticated: false,
       isLoading: false,
       error: null,
+      organization: null, // { name, segment }
+      features: {},       // { 'feature_key': bool }
+      usage: {},          // { 'metric': { current, limit } }
 
       // ── Actions ────────────────────────────────────────────────────────
 
@@ -38,12 +41,13 @@ export const useAuthStore = create(
           set({
             accessToken: data.access_token,
             refreshToken: data.refresh_token,
+            user: data.user,
+            isAuthenticated: true,
+            isLoading: false,
+            error: null,
           });
 
-          // Fetch full user profile
-          await get().fetchMe();
-
-          return true;
+          return data.user;
         } catch (err) {
           const message =
             err.response?.data?.detail || 'Login failed. Please try again.';
@@ -53,13 +57,59 @@ export const useAuthStore = create(
       },
 
       /**
+       * Get Google OAuth Login URL — GET /auth/google/login
+       */
+      getGoogleAuthUrl: async () => {
+        set({ isLoading: true, error: null });
+        try {
+          // Backend should return { url: "..." }
+          const { data } = await api.get('/auth/google/login');
+          set({ isLoading: false });
+          return data.url;
+        } catch (err) {
+          const message =
+            err.response?.data?.detail || 'Failed to fetch Google auth URL.';
+          set({ isLoading: false, error: message });
+          return null;
+        }
+      },
+
+      /**
+       * Handle Google Callback — POST /auth/google/callback?code=...
+       * Replaces fetchTokensFromCookies
+       */
+      handleGoogleCallback: async (code) => {
+        set({ isLoading: true, error: null });
+        try {
+          const { data } = await api.get(`/auth/google/callback?code=${code}`);
+          
+          set({
+            accessToken: data.access_token,
+            refreshToken: data.refresh_token,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+
+          // Fetch user profile
+          await get().fetchMe();
+          
+          return get().user;
+        } catch (err) {
+          const message = err.response?.data?.detail || 'Google authentication failed.';
+          set({ isLoading: false, error: message });
+          return false;
+        }
+      },
+
+      /**
        * Register — POST /auth/register (JSON)
        */
-      register: async ({ tenantName, email, password, firstName, lastName }) => {
+      register: async ({ tenantName, tenant_segment, email, password, firstName, lastName }) => {
         set({ isLoading: true, error: null });
         try {
           const { data } = await api.post('/auth/register', {
             tenant_name: tenantName,
+            tenant_segment: tenant_segment,
             user_email: email,
             user_password: password,
             user_first_name: firstName,
@@ -69,11 +119,13 @@ export const useAuthStore = create(
           set({
             accessToken: data.access_token,
             refreshToken: data.refresh_token,
+            user: data.user,
+            isAuthenticated: true,
+            isLoading: false,
+            error: null,
           });
 
-          await get().fetchMe();
-
-          return true;
+          return data.user;
         } catch (err) {
           const message =
             err.response?.data?.detail ||
@@ -91,6 +143,12 @@ export const useAuthStore = create(
           const { data } = await api.get('/auth/me');
           set({
             user: data,
+            organization: {
+              name: data.organization_name,
+              segment: data.organization_segment,
+            },
+            features: data.features || {},
+            usage: data.usage || {},
             isAuthenticated: true,
             isLoading: false,
             error: null,
@@ -145,12 +203,23 @@ export const useAuthStore = create(
 
         set({
           user: null,
+          organization: null,
+          features: {},
+          usage: {},
           accessToken: null,
           refreshToken: null,
           isAuthenticated: false,
           isLoading: false,
           error: null,
         });
+      },
+
+      /**
+       * Check Feature Access
+       */
+      checkFeatureAccess: (featureKey) => {
+        const { features } = get();
+        return !!features[featureKey];
       },
 
       /**

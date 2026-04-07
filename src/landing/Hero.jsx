@@ -120,22 +120,23 @@ const Hero = () => {
       </p>
 
       <div className="hero-cta-row flex flex-col items-center justify-center gap-4 w-full mb-12">
-        <div className="flex flex-col md:flex-row gap-2 w-full md:w-[480px]">
-          <input
-            type="email"
-            placeholder={t('hero.placeholder')}
-            className="flex-1 bg-white/5 border border-white/12 rounded-full px-6 text-sm text-white focus:outline-none focus:border-acid transition-colors placeholder-white/40 h-12"
-          />
-          <button className="h-12 bg-acid text-void font-bold text-sm px-8 rounded-full hover:brightness-110 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_4px_14px_rgba(232,245,50,0.3)] shrink-0 whitespace-nowrap">
-            {t('hero.cta')}
-          </button>
+        <div className="flex flex-col items-center gap-4 w-full">
+          <a 
+            href="#roi"
+            className="h-14 bg-acid text-void font-bold text-base px-12 rounded-full hover:brightness-110 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_8px_30px_rgba(232,245,50,0.3)] shrink-0 whitespace-nowrap flex items-center justify-center uppercase tracking-tight"
+          >
+            Calculate Your ROI →
+          </a>
         </div>
-        <p className="hero-trust-text text-white/60 text-xs mt-2">
-          {t('hero.trust')}
-        </p>
-        <a href="#features" className="hero-ghost-link text-white/50 hover:text-white text-sm mt-2 transition-colors flex items-center gap-1">
-          {t('hero.see_how')}
-        </a>
+        <div className="flex flex-col md:flex-row items-center gap-6 mt-4">
+            <p className="hero-trust-text text-white/40 text-[11px] font-medium tracking-tight">
+              {t('hero.trust')}
+            </p>
+            <div className="hidden md:block w-px h-4 bg-white/10"></div>
+            <a href="#features" className="hero-ghost-link text-white/50 hover:text-white text-sm transition-colors flex items-center gap-1">
+                {t('hero.see_how')}
+            </a>
+        </div>
       </div>
 
       <div className="hero-social-proof flex flex-col items-center mb-16 w-full max-w-[800px] mx-auto">

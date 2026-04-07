@@ -5,6 +5,7 @@ import {
   Loader2, ArrowLeft, MoreHorizontal, Sparkles, FileImage, ShieldCheck
 } from 'lucide-react';
 import api from '../../lib/axios';
+import { getErrorMessage } from '../../lib/utils';
 import { useUiStore } from '../../stores/uiStore';
 
 const STEPS = {
@@ -93,8 +94,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess }) => {
       setPreviewData(data);
       setStep(STEPS.PREVIEW);
     } catch (err) {
-      const errorMsg = err.response?.data?.detail || 'Failed to process the import.';
-      addToast({ type: 'error', message: errorMsg });
+      addToast({ type: 'error', message: getErrorMessage(err, 'Failed to process the import.') });
       setStep(STEPS.UPLOAD);
     } finally {
       setIsUploading(false);
@@ -123,8 +123,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess }) => {
         addToast({ type: 'success', message: `Successfully imported data.` });
       }
     } catch (err) {
-      const errorMsg = err.response?.data?.detail || 'Failed to confirm the import.';
-      addToast({ type: 'error', message: errorMsg });
+      addToast({ type: 'error', message: getErrorMessage(err, 'Failed to confirm the import.') });
     } finally {
       setIsConfirming(false);
     }
@@ -303,6 +302,8 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess }) => {
                         <th className="px-4 py-3">Medicine</th>
                         <th className="px-4 py-3">SKU</th>
                         <th className="px-4 py-3">Qty</th>
+                        <th className="px-4 py-3">Cost Price</th>
+                        <th className="px-4 py-3">Selling Price</th>
                         <th className="px-4 py-3">Batch/Expiry</th>
                         <th className="px-4 py-3">Matched</th>
                       </tr>
@@ -319,6 +320,8 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess }) => {
                             </td>
                             <td className="px-4 py-3 font-mono text-xs text-white/60">{item.medicine_sku || '-'}</td>
                             <td className="px-4 py-3 text-white font-bold">{item.quantity || 0}</td>
+                            <td className="px-4 py-3 text-white/80">{item.cost_price !== null && item.cost_price !== undefined ? item.cost_price : '-'}</td>
+                            <td className="px-4 py-3 text-white/80">{item.selling_price !== null && item.selling_price !== undefined ? item.selling_price : '-'}</td>
                             <td className="px-4 py-3">
                               <div className="text-xs text-white/80">{item.batch_number || 'No batch'}</div>
                               <div className="text-[10px] text-white/40">{item.expiry_date || '-'}</div>
@@ -338,7 +341,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess }) => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="5" className="px-4 py-8 text-center text-white/40 italic">
+                          <td colSpan="7" className="px-4 py-8 text-center text-white/40 italic">
                             No valid items extracted.
                           </td>
                         </tr>

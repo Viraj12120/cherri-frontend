@@ -33,7 +33,7 @@ const Toast = ({ id, type, message, duration = 5000 }) => {
     }
   }, [id, duration, removeToast]);
 
-  const config = {
+const TOAST_CONFIGS = {
     success: {
       icon: CheckCircle2,
       style: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500',
@@ -54,7 +54,9 @@ const Toast = ({ id, type, message, duration = 5000 }) => {
       style: 'bg-acid/10 border-acid/20 text-acid',
       iconStyle: 'text-acid',
     },
-  }[type] || config.info;
+  };
+
+  const config = TOAST_CONFIGS[type] || TOAST_CONFIGS.info;
 
   const Icon = config.icon;
 

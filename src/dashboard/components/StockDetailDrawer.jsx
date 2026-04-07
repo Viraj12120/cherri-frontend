@@ -1,12 +1,46 @@
 import React from 'react';
 import { X, Package, CalendarDays, Clock, Tag, Building2, BarChart2, Truck, Edit, Info } from 'lucide-react';
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
 const StockDetailDrawer = ({ item, onClose, onReorder }) => {
-  const stockPct = Math.min(100, (item.stock / item.min) * 100);
-  const barColor = item.status === 'CRIT' ? 'bg-danger' : item.status === 'LOW' ? 'bg-warn' : 'bg-success';
-  const maxConsumption = Math.max(...item.consumption);
+  // Map real API fields (with fallbacks for safety)
+  const qty = item.quantity ?? 0;
+  const threshold = item.medicine?.low_stock_threshold ?? 10;
+  const medicineName = item.medicine?.name || 'Unknown';
+  const sku = item.medicine?.sku || '-';
+  const manufacturer = item.medicine?.manufacturer || '-';
+  const supplierName = item.supplier?.name || '-';
+  const batchNumber = item.batch_number || '-';
+  const costPrice = parseFloat(item.cost_price) || 0;
+  const sellingPrice = parseFloat(item.selling_price) || 0;
+  const expiryDate = item.expiry_date
+    ? new Date(item.expiry_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+    : '-';
+
+  // Compute status & days left
+  const now = new Date();
+  const expiry = item.expiry_date ? new Date(item.expiry_date) : null;
+  const isExpired = expiry && expiry < now;
+  const daysLeft = expiry ? Math.ceil((expiry - now) / (1000 * 60 * 60 * 24)) : 999;
+
+  let statusLabel = 'OK';
+  let statusColor = 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
+  if (isExpired && qty === 0) {
+    statusLabel = 'EXPIRED + NO STOCK';
+    statusColor = 'bg-danger/10 text-danger border-danger/20';
+  } else if (isExpired) {
+    statusLabel = 'EXPIRED';
+    statusColor = 'bg-orange-500/10 text-orange-400 border-orange-500/20';
+  } else if (qty === 0) {
+    statusLabel = 'NO STOCK';
+    statusColor = 'bg-danger/10 text-danger border-danger/20';
+  } else if (qty <= threshold) {
+    statusLabel = 'LOW';
+    statusColor = 'bg-warn/10 text-warn border-warn/20';
+  }
+
+  const stockPct = threshold > 0 ? Math.min(100, (qty / threshold) * 100) : (qty > 0 ? 100 : 0);
+  const barColor = statusLabel.includes('NO STOCK') || statusLabel.includes('EXPIRED') ? 'bg-danger' : statusLabel === 'LOW' ? 'bg-warn' : 'bg-emerald-500';
+  const needsReorder = statusLabel !== 'OK';
 
   return (
     <>
@@ -18,11 +52,11 @@ const StockDetailDrawer = ({ item, onClose, onReorder }) => {
         <div className="px-6 py-5 border-b border-white/5 flex items-start justify-between shrink-0">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${item.color}`}>{item.status}</span>
-              <span className="text-[10px] text-white/30 font-mono">{item.sku}</span>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${statusColor}`}>{statusLabel}</span>
+              <span className="text-[10px] text-white/30 font-mono">{sku}</span>
             </div>
-            <h2 className="text-lg font-bold text-white">{item.name}</h2>
-            <p className="text-[11px] text-white/40 mt-0.5">{item.cat} · {item.supplier}</p>
+            <h2 className="text-lg font-bold text-white">{medicineName}</h2>
+            <p className="text-[11px] text-white/40 mt-0.5">{manufacturer} · {supplierName}</p>
           </div>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors mt-1">
             <X size={16} />
@@ -31,20 +65,18 @@ const StockDetailDrawer = ({ item, onClose, onReorder }) => {
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
-          {/* Description */}
-          <p className="text-[11px] text-white/50 leading-relaxed">{item.description}</p>
 
           {/* Key Stats */}
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: 'Current Stock', val: `${item.stock} units`, icon: Package, danger: item.status === 'CRIT' },
-              { label: 'Min Threshold', val: `${item.min} units`, icon: Info },
-              { label: 'Days Remaining', val: `~${item.daysLeft} days`, icon: CalendarDays, danger: item.daysLeft < 7 },
-              { label: 'Expiry Date', val: item.expiry, icon: Clock, danger: item.daysLeft < 30 },
-              { label: 'Batch No.', val: item.batch, icon: Tag },
-              { label: 'Supplier', val: item.supplier, icon: Building2 },
-              { label: 'Unit Cost', val: `₹${item.unitCost.toFixed(2)}`, icon: BarChart2 },
-              { label: 'Selling Price', val: `₹${item.sellingPrice.toFixed(2)}`, icon: BarChart2 },
+              { label: 'Current Stock', val: `${qty} units`, icon: Package, danger: qty === 0 },
+              { label: 'Min Threshold', val: `${threshold} units`, icon: Info },
+              { label: 'Days to Expiry', val: isExpired ? 'Expired' : `~${Math.max(0, daysLeft)} days`, icon: CalendarDays, danger: daysLeft < 7 },
+              { label: 'Expiry Date', val: expiryDate, icon: Clock, danger: daysLeft < 30 },
+              { label: 'Batch No.', val: batchNumber, icon: Tag },
+              { label: 'Supplier', val: supplierName, icon: Building2 },
+              { label: 'Unit Cost', val: `₹${costPrice.toFixed(2)}`, icon: BarChart2 },
+              { label: 'Selling Price', val: `₹${sellingPrice.toFixed(2)}`, icon: BarChart2 },
             ].map((s, i) => (
               <div key={i} className="bg-white/[0.03] border border-white/5 rounded-xl p-3 flex items-center gap-2.5">
                 <s.icon size={14} className={s.danger ? 'text-danger' : 'text-white/30'} />
@@ -60,7 +92,7 @@ const StockDetailDrawer = ({ item, onClose, onReorder }) => {
           <div>
             <div className="flex justify-between text-[10px] text-white/30 mb-2">
               <span className="font-bold uppercase tracking-widest">Stock Level</span>
-              <span className={item.status === 'CRIT' ? 'text-danger font-bold' : item.status === 'LOW' ? 'text-warn font-bold' : 'text-success font-bold'}>
+              <span className={qty === 0 ? 'text-danger font-bold' : statusLabel === 'LOW' ? 'text-warn font-bold' : 'text-emerald-500 font-bold'}>
                 {stockPct.toFixed(0)}% of minimum
               </span>
             </div>
@@ -69,28 +101,8 @@ const StockDetailDrawer = ({ item, onClose, onReorder }) => {
             </div>
             <div className="flex justify-between text-[9px] text-white/20 mt-1.5">
               <span>0</span>
-              <span>Min: {item.min}</span>
+              <span>Min: {threshold}</span>
             </div>
-          </div>
-
-          {/* Consumption Chart (7-day) */}
-          <div>
-            <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-3">7-Day Consumption</p>
-            <div className="flex items-end gap-1.5 h-16">
-              {item.consumption.map((val, i) => (
-                <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                  <div
-                    className="w-full rounded-sm bg-acid/20 hover:bg-acid/40 transition-all"
-                    style={{ height: `${(val / maxConsumption) * 100}%` }}
-                    title={`${val} units`}
-                  />
-                  <span className="text-[8px] text-white/20">{DAYS[i]}</span>
-                </div>
-              ))}
-            </div>
-            <p className="text-[10px] text-white/25 mt-2 text-center">
-              Avg: {(item.consumption.reduce((a, b) => a + b, 0) / item.consumption.length).toFixed(1)} units/day
-            </p>
           </div>
 
           {/* Financials */}
@@ -98,9 +110,9 @@ const StockDetailDrawer = ({ item, onClose, onReorder }) => {
             <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-3">Financials</p>
             <div className="space-y-2">
               {[
-                { label: 'Stock Value (cost)', val: `₹${(item.stock * item.unitCost).toLocaleString('en-IN', { maximumFractionDigits: 0 })}` },
-                { label: 'Stock Value (MRP)', val: `₹${(item.stock * item.sellingPrice).toLocaleString('en-IN', { maximumFractionDigits: 0 })}` },
-                { label: 'Margin per unit', val: `₹${(item.sellingPrice - item.unitCost).toFixed(2)} (${(((item.sellingPrice - item.unitCost) / item.unitCost) * 100).toFixed(0)}%)` },
+                { label: 'Stock Value (cost)', val: `₹${(qty * costPrice).toLocaleString('en-IN', { maximumFractionDigits: 0 })}` },
+                { label: 'Stock Value (MRP)', val: `₹${(qty * sellingPrice).toLocaleString('en-IN', { maximumFractionDigits: 0 })}` },
+                { label: 'Margin per unit', val: costPrice > 0 ? `₹${(sellingPrice - costPrice).toFixed(2)} (${(((sellingPrice - costPrice) / costPrice) * 100).toFixed(0)}%)` : '-' },
               ].map((f, i) => (
                 <div key={i} className="flex items-center justify-between">
                   <span className="text-[11px] text-white/40">{f.label}</span>
@@ -116,15 +128,14 @@ const StockDetailDrawer = ({ item, onClose, onReorder }) => {
           <button onClick={onClose} className="h-9 px-4 rounded-lg border border-white/10 text-xs font-bold text-white/50 hover:text-white hover:bg-white/5 transition-all">
             Close
           </button>
-          {item.status !== 'OK' && (
+          {needsReorder ? (
             <button
               onClick={() => { onClose(); onReorder(item); }}
               className="flex-1 h-9 bg-acid text-void rounded-lg text-xs font-bold hover:brightness-110 transition-all flex items-center justify-center gap-2"
             >
-              <Truck size={13} /> Reorder {item.suggestedQty.toLocaleString()} units
+              <Truck size={13} /> Reorder
             </button>
-          )}
-          {item.status === 'OK' && (
+          ) : (
             <button className="flex-1 h-9 bg-white/5 hover:bg-white/10 border border-white/10 text-white/60 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2">
               <Edit size={13} /> Edit Stock
             </button>

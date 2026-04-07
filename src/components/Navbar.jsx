@@ -138,13 +138,6 @@ const Navbar = ({ currentView = 'landing', isMenuOpen, setIsMenuOpen }) => {
           )}
         </div>
 
-        <button
-          onClick={handleLiveDashboard}
-          className="text-xs md:text-sm border border-acid/50 rounded-full px-4 py-1.5 text-acid hover:!text-black hover:bg-acid transition-colors font-medium hidden sm:flex items-center gap-2 group"
-        >
-          <div className="w-2 h-2 rounded-full bg-acid animate-pulse group-hover:!bg-black"></div>
-          <span className="group-hover:!text-black">Live Dashboard</span>
-        </button>
 
         <Link
           to={PATHS.login}

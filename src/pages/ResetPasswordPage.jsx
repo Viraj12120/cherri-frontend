@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Lock, AlertCircle, Loader2 } from 'lucide-react';
 import { PATHS } from '../routes/paths';
 import api from '../lib/axios';
+import { getErrorMessage } from '../lib/utils';
 import loginBg from '../assets/login.jpg';
 
 const ResetPasswordPage = () => {
@@ -36,7 +37,7 @@ const ResetPasswordPage = () => {
       setStatus('success');
       setTimeout(() => navigate(PATHS.login), 3000); // Redirect after 3s
     } catch (err) {
-      setErrorMessage(err.response?.data?.detail || 'Failed to reset password. The link might be expired.');
+      setErrorMessage(getErrorMessage(err, 'Failed to reset password. The link might be expired.'));
       setStatus('error');
     }
   };

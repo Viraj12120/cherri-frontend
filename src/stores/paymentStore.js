@@ -10,57 +10,56 @@ export const usePaymentStore = create((set, get) => ({
   // ── State ────────────────────────────────────────────────────────────
   currentOrder: null,    // { razorpay_order_id, amount, currency }
   paymentStatus: 'idle', // 'idle' | 'creating' | 'processing' | 'success' | 'failed'
+  plans: [],
+  isFetchingPlans: false,
   error: null,
 
   // ── Actions ──────────────────────────────────────────────────────────
 
-  /**
-   * Create a Razorpay order on the backend.
-   */
+  fetchPlans: async (segment) => {
+    set({ isFetchingPlans: true, error: null });
+    try {
+      const url = segment ? `/plans?segment=${segment}` : '/plans';
+      const { data } = await api.get(url);
+      set({ plans: data, isFetchingPlans: false });
+    } catch (err) {
+      const msg = err.response?.data?.detail || 'Failed to load subscription plans.';
+      set({ isFetchingPlans: false, error: msg });
+    }
+  },
+
   createOrder: async (planId) => {
     set({ paymentStatus: 'creating', error: null });
     try {
-      const { data } = await api.post('/subscriptions/create-order', {
-        plan_id: planId,
-      });
+      const { data } = await api.post('/subscriptions/create', { plan: planId.toUpperCase() });
 
       set({
-        currentOrder: {
-          razorpay_order_id: data.razorpay_order_id || data.order_id,
-          amount: data.amount,
-          currency: data.currency || 'INR',
-        },
+        currentOrder: data,
         paymentStatus: 'processing',
       });
 
       return data;
     } catch (err) {
-      const message =
-        err.response?.data?.detail || 'Failed to create payment order.';
-      set({ paymentStatus: 'failed', error: message });
+      const msg = err.response?.data?.detail || 'Failed to create subscription order.';
+      set({ paymentStatus: 'failed', error: msg });
       throw err;
     }
   },
 
-  /**
-   * Verify payment with backend after Razorpay checkout success.
-   */
   verifyPayment: async (razorpayResponse) => {
     set({ paymentStatus: 'processing', error: null });
     try {
-      const { data } = await api.post('/subscriptions/verify-payment', {
-        razorpay_order_id: razorpayResponse.razorpay_order_id,
-        razorpay_payment_id: razorpayResponse.razorpay_payment_id,
-        razorpay_signature: razorpayResponse.razorpay_signature,
-      });
-
+      const { data } = await api.post('/subscriptions/verify', razorpayResponse);
       set({ paymentStatus: 'success', error: null });
+      
+      // Refresh auth data to reflect new subscription/plan immediately
+      const { useAuthStore } = await import('./authStore');
+      await useAuthStore.getState().fetchMe();
+      
       return data;
     } catch (err) {
-      const message =
-        err.response?.data?.detail ||
-        'Payment verification failed. Please contact support.';
-      set({ paymentStatus: 'failed', error: message });
+      const msg = err.response?.data?.detail || 'Payment verification failed.';
+      set({ paymentStatus: 'failed', error: msg });
       throw err;
     }
   },

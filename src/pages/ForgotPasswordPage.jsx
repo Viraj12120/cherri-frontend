@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Mail, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { PATHS } from '../routes/paths';
 import api from '../lib/axios';
+import { getErrorMessage } from '../lib/utils';
 import loginBg from '../assets/login.jpg';
 
 const ForgotPasswordPage = () => {
@@ -20,7 +21,7 @@ const ForgotPasswordPage = () => {
       await api.post('/auth/forgot-password', { email });
       setStatus('success');
     } catch (err) {
-      setErrorMessage(err.response?.data?.detail || 'Failed to send reset link. Please try again.');
+      setErrorMessage(getErrorMessage(err, 'Failed to send reset link. Please try again.'));
       setStatus('error');
     }
   };

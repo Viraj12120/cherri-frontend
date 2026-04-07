@@ -14,6 +14,9 @@ import { useUiStore } from '../stores/uiStore';
 
 import NLQueryTerminal from './NLQueryTerminal';
 import MobileRestriction from './components/MobileRestriction';
+import TrialExpiredOverlay from './components/TrialExpiredOverlay';
+import UsageMeter from './components/UsageMeter';
+import FeatureGateWrapper from '../components/FeatureGateWrapper';
 const DashboardLayout = () => {
   const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -37,6 +40,7 @@ const DashboardLayout = () => {
     { icon: LineChart, label: t('dashboard.sidebar.forecasting'), path: null, disabled: true },
   ];
   const user = useAuthStore((s) => s.user);
+  const organization = useAuthStore((s) => s.organization);
   const logout = useAuthStore((s) => s.logout);
 
   const handleLogout = async () => {
@@ -44,10 +48,20 @@ const DashboardLayout = () => {
     navigate(PATHS.login, { replace: true });
   };
 
+  // ── Trial Enforcement Logic ──────────────────────────────────────────
+  const isTrialing = user?.subscription_status === 'TRIALING';
+  const hasTrailEnded = user?.subscription_end_date && new Date(user.subscription_end_date) < new Date();
+  const isOnBillingPage = location.pathname.includes('/billing');
+  const showTrialExpired = isTrialing && hasTrailEnded && !isOnBillingPage;
+  // ───────────────────────────────────────────────────────────────────
+
   return (
     <div className="flex h-screen bg-void text-white overflow-hidden relative">
       {/* Mobile Restriction Screen */}
       <MobileRestriction />
+
+      {/* Trial Expired Policy Enforcement */}
+      {showTrialExpired && <TrialExpiredOverlay />}
 
       {/* Sidebar */}
       <aside
@@ -144,6 +158,15 @@ const DashboardLayout = () => {
               {!isCollapsed && <span className="text-sm font-medium lg:inline hidden">Team</span>}
             </NavLink>
           )} */}
+
+          {/* Usage Meters / Sidebar Bottom */}
+          {!isCollapsed && (
+            <div className="mt-8 px-3 space-y-4 lg:block hidden">
+              <div className="h-px bg-white/5 mb-6" />
+              <UsageMeter metricKey="medicines" label="Inventory Capacity" icon={Box} />
+              <UsageMeter metricKey="agent_actions" label="AI Replenishments" icon={Sparkles} />
+            </div>
+          )}
         </nav>
 
         <div className="p-4 border-t border-white/5">
@@ -188,14 +211,19 @@ const DashboardLayout = () => {
             </button>
 
             {/* User Profile - Global Topbar */}
-            <div className="flex items-center gap-3  px-4 py-2">
+            <div className="flex items-center gap-3 bg-white/5 border border-white/5 rounded-2xl px-4 py-2">
               <div className="text-right hidden sm:block">
                 <p className="text-[11px] font-bold text-white leading-none mb-1">
                   {user?.first_name || 'Pharmacist'} {user?.last_name || ''}
                 </p>
-                <p className="text-[9px] text-white/30 font-mono uppercase tracking-widest leading-none">
-                  {user?.role || 'User'}
-                </p>
+                <div className="flex items-center justify-end gap-1.5">
+                    <span className="text-[8px] bg-acid text-void px-1.5 rounded-sm font-black uppercase tracking-tighter">
+                        {organization?.segment || 'Clinic'}
+                    </span>
+                    <p className="text-[9px] text-white/30 font-mono uppercase tracking-widest leading-none">
+                    {user?.role || 'User'}
+                    </p>
+                </div>
               </div>
               <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-acid/30 to-acid/60 flex items-center justify-center border border-white/10 shrink-0">
                 <User className="text-void" size={14} />

@@ -6,7 +6,7 @@ import Skeleton, { TableRowSkeleton } from '../../components/ui/Skeleton';
 import StatusBadge from '../../components/ui/StatusBadge';
 import NewOrderModal from '../../components/modals/NewOrderModal';
 
-const statusPipeline = ['PENDING', 'APPROVED', 'ORDERED', 'IN TRANSIT', 'RECEIVED'];
+const statusPipeline = ['PENDING', 'APPROVED', 'ORDERED', 'RECEIVED', 'CANCELLED'];
 
 const OrdersPage = () => {
   const addToast = useUiStore((s) => s.addToast);
@@ -56,7 +56,7 @@ const OrdersPage = () => {
 
   const filtered = activeFilter === 'All' 
     ? orders 
-    : orders.filter(o => (o.status || 'PENDING').toUpperCase() === activeFilter);
+    : orders.filter(o => (o.status || 'pending').toUpperCase() === activeFilter);
 
   return (
     <div className="space-y-8 max-w-[1400px] mx-auto pb-20">
@@ -76,7 +76,7 @@ const OrdersPage = () => {
       {/* Pipeline Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {statusPipeline.map((s, i) => {
-          const count = orders.filter(o => (o.status || 'PENDING').toUpperCase() === s).length;
+          const count = orders.filter(o => (o.status || 'pending').toUpperCase() === s).length;
           return (
             <div 
               key={i} 
@@ -112,7 +112,6 @@ const OrdersPage = () => {
                 <th className="px-6 py-4 font-medium border-l border-white/5 text-right">Qty</th>
                 <th className="px-6 py-4 font-medium text-right">Amount</th>
                 <th className="px-6 py-4 font-medium border-l border-white/5">Created</th>
-                <th className="px-6 py-4 font-medium border-l border-white/5">Source</th>
                 <th className="px-6 py-4 font-medium border-l border-white/5">Status</th>
                 <th className="px-6 py-4 font-medium border-l border-white/5 text-right min-w-[140px]">Actions</th>
               </tr>
@@ -121,33 +120,36 @@ const OrdersPage = () => {
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i}>
-                    <td colSpan={9} className="px-6">
+                    <td colSpan={8} className="px-6">
                       <TableRowSkeleton columns={7} />
                     </td>
                   </tr>
                 ))
               ) : filtered.length > 0 ? (
                 filtered.map((o, i) => {
-                  const status = (o.status || 'PENDING').toUpperCase();
-                  const isAgent = o.is_agent_generated || o.agent || false; 
+                  const status = (o.status || 'pending').toUpperCase();
                   const orderId = o.id || o.order_id || `#N/A`;
+
+                  // Sum up quantity from items
+                  const totalQty = o.items && o.items.length 
+                    ? o.items.reduce((sum, item) => sum + (item.quantity || 0), 0)
+                    : (o.quantity || o.qty || 0);
+
+                  // Extract medicine and supplier info
+                  const medicineName = (o.items && o.items[0]?.medicine?.name) || 'Multiple / Unknown';
+                  const supplierName = o.supplier?.name || '-';
 
                   return (
                     <tr key={i} className="hover:bg-white/[0.02] transition-colors group cursor-pointer">
-                      <td className="px-6 py-3 font-mono text-white/40">{orderId}</td>
-                      <td className="px-6 py-3 font-bold text-white/90 border-l border-white/5">{o.medicine_name || o.medicine || '-'}</td>
-                      <td className="px-6 py-3 text-white/50 border-l border-white/5">{o.supplier_name || o.supplier || '-'}</td>
-                      <td className="px-6 py-3 text-white/80 border-l border-white/5 text-right">{o.quantity || o.qty || 0}</td>
-                      <td className="px-6 py-3 font-bold text-acid text-right">{o.total_amount || o.amount || '₹0'}</td>
-                      <td className="px-6 py-3 text-white/40 border-l border-white/5">
-                        {o.created_at ? new Date(o.created_at).toLocaleDateString() : (o.created || '-')}
+                      <td className="px-6 py-3 font-mono text-white/40" title={orderId}>
+                        {orderId.substring(0, 8)}...
                       </td>
-                      <td className="px-6 py-3 border-l border-white/5">
-                        {isAgent ? (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-acid/10 text-acid border border-acid/20">AI Agent</span>
-                        ) : (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 text-white/40 border border-white/10">Manual</span>
-                        )}
+                      <td className="px-6 py-3 font-bold text-white/90 border-l border-white/5">{medicineName}</td>
+                      <td className="px-6 py-3 text-white/50 border-l border-white/5">{supplierName}</td>
+                      <td className="px-6 py-3 text-white/80 border-l border-white/5 text-right">{totalQty}</td>
+                      <td className="px-6 py-3 font-bold text-acid text-right">₹{o.total_amount || 0}</td>
+                      <td className="px-6 py-3 text-white/40 border-l border-white/5">
+                        {o.created_at ? new Date(o.created_at).toLocaleDateString() : '-'}
                       </td>
                       <td className="px-6 py-3 border-l border-white/5">
                         <StatusBadge status={status} />
@@ -186,7 +188,7 @@ const OrdersPage = () => {
                               <PackageCheck size={12} /> Receive
                             </button>
                           )}
-                          {(status === 'IN TRANSIT' || status === 'RECEIVED' || status === 'CANCELLED') && (
+                          {(status === 'RECEIVED' || status === 'CANCELLED') && (
                             <span className="text-white/20 text-[10px]">—</span>
                           )}
                         </div>
@@ -196,7 +198,7 @@ const OrdersPage = () => {
                 })
               ) : (
                 <tr>
-                  <td colSpan={9} className="text-center py-16 text-white/30">
+                  <td colSpan={8} className="text-center py-16 text-white/30">
                     <div className="flex flex-col items-center justify-center gap-3">
                       <ClipboardList size={32} className="opacity-20" />
                       <p>No orders found.</p>

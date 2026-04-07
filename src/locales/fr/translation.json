@@ -265,6 +265,8 @@
     "continue_as": "Continuer en tant que Viraj",
     "continue_apple": "Continuer avec Apple",
     "continue_email": "Continuer avec l'e-mail",
+    "continue_google": "Continuer avec Google",
+    "google_sso": "Authentification unique (SSO)",
     "sso_login": "Continuer avec votre e-mail pro - connexion SSO",
     "no_account": "Vous n'avez pas de compte ?",
     "signup_link": "S'inscrire",

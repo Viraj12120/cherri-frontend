@@ -265,6 +265,8 @@
     "continue_as": "विराज के रूप में जारी रखें",
     "continue_apple": "Apple के साथ जारी रखें",
     "continue_email": "ईमेल के साथ जारी रखें",
+    "continue_google": "Google के साथ जारी रखें",
+    "google_sso": "सिंगल साइन-ऑन",
     "sso_login": "अपने कार्य ईमेल के साथ जारी रखें - SSO लॉगिन",
     "no_account": "क्या आपका खाता नहीं है?",
     "signup_link": "साइन अप करें",
