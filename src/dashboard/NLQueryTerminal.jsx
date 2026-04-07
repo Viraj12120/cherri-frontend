@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Terminal, Send, Loader2, Cpu, ChevronRight, X, Zap } from 'lucide-react';
+import { Terminal, Send, Loader2, Cpu, ChevronRight, X, Zap, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../lib/axios';
 
@@ -18,6 +18,7 @@ const NLQueryTerminal = () => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -69,7 +70,12 @@ const NLQueryTerminal = () => {
       drag
       dragMomentum={false}
       dragConstraints={bounds}
-      className={`fixed bottom-6 right-6 z-[9999] transition-all duration-300 ${isExpanded ? 'w-[600px] h-[520px]' : 'w-auto h-auto'}`}
+      className={`fixed z-[9999] transition-all duration-500 ease-in-out ${!isExpanded
+          ? 'bottom-6 right-6 w-auto h-auto'
+          : isMaximized
+            ? 'top-4 left-4 right-4 bottom-4 w-[calc(100vw-32px)] h-[calc(100vh-32px)]'
+            : 'bottom-6 right-6 w-[600px] h-[520px]'
+        }`}
       style={{ touchAction: 'none' }}
     >
       {!isExpanded ? (
@@ -88,13 +94,28 @@ const NLQueryTerminal = () => {
             <div className="flex gap-1.5 cursor-pointer">
               <button
                 onPointerDown={(e) => e.stopPropagation()}
-                onClick={(e) => { e.stopPropagation(); setIsExpanded(false); }}
+                onClick={(e) => { e.stopPropagation(); setIsExpanded(false); setIsMaximized(false); }}
                 className="w-3 h-3 rounded-full bg-danger/80 hover:bg-danger transition-colors flex items-center justify-center group/btn"
+                title="Close"
               >
                 <X size={8} className="opacity-0 group-hover/btn:opacity-100 text-void" />
               </button>
-              <div className="w-3 h-3 rounded-full bg-warn/80" />
-              <div className="w-3 h-3 rounded-full bg-success/80" />
+              <button
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => { e.stopPropagation(); setIsMaximized(false); }}
+                className="w-3 h-3 rounded-full bg-warn/80 hover:bg-warn transition-colors flex items-center justify-center group/btn"
+                title="Restore"
+              >
+                <div className="w-1 h-[1px] bg-void opacity-0 group-hover/btn:opacity-100" />
+              </button>
+              <button
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => { e.stopPropagation(); setIsMaximized(true); }}
+                className="w-3 h-3 rounded-full bg-success/80 hover:bg-success transition-colors flex items-center justify-center group/btn text-void"
+                title="Maximize"
+              >
+                <Plus size={8} className="opacity-0 group-hover/btn:opacity-100" />
+              </button>
             </div>
             <div className="flex items-center gap-2 ml-2 pointer-events-none">
               <Terminal size={12} className="text-acid" />
